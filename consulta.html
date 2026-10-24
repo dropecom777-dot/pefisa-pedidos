@@ -54,11 +54,12 @@ async function consultar(silencioso){
   clearTimeout(timer);
   if (error) { box("neutral", "Ops", "Não foi possível consultar agora. Tente novamente."); return; }
   const o = data && data[0], n = o ? esc(o.numero) : esc(q);
+  const ola = o && o.cliente ? `Olá, <b>${esc(o.cliente)}</b>! ` : "";
   if (!o) { box("neutral", "Não encontrado", "Confira o número do pedido ou fale com o balcão."); return; }
-  if (o.status === "pronto") box("ok", "✅ Pronto!", `Pedido ${n} já pode ser retirado no balcão.`);
-  else if (o.status === "retirado") box("neutral", "📦 Já retirado", `Pedido ${n} foi retirado às ${hora(o.picked_at)}.`);
-  else if (o.status === "cancelado") box("neutral", "Cancelado", `Pedido ${n} foi cancelado. Fale com o balcão.`);
-  else { box("wait", "⏳ Em preparo", `Pedido ${n}. Estamos separando seus produtos.`); timer = setTimeout(() => consultar(true), 15000); }
+  if (o.status === "pronto") box("ok", "✅ Pronto!", `${ola}Pedido ${n} já pode ser retirado no balcão.`);
+  else if (o.status === "retirado") box("neutral", "📦 Já retirado", `${ola}Pedido ${n} foi retirado às ${hora(o.picked_at)}.`);
+  else if (o.status === "cancelado") box("neutral", "Cancelado", `${ola}Pedido ${n} foi cancelado. Fale com o balcão.`);
+  else { box("wait", "⏳ Em preparo", `${ola}Pedido ${n}. Estamos separando seus produtos.`); timer = setTimeout(() => consultar(true), 15000); }
 }
 
 $("#go").onclick = () => consultar(false);

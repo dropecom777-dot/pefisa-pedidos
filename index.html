@@ -55,6 +55,7 @@ h3{margin:4px 0 10px;font-size:15px;color:var(--mut)}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>
 const SB_URL = "https://fgdqkflpirqrelhixpvn.supabase.co";
+const SITE = "https://dropecom777-dot.github.io/pefisa-pedidos/";
 const SB_KEY = "sb_publishable_jO5dg7oBFxvup4SJUbaIAQ_PFNDFBlS";
 const sb = supabase.createClient(SB_URL, SB_KEY);
 
@@ -112,7 +113,8 @@ function extrairNota(t){
   const numero = pick([/(?:pedido|or[çc]amento|venda)\s*(?:n[ºo°.]*)?\s*[:#-]?\s*(\d{1,10})/i, /\bn[ºo°.]\s*[:#-]?\s*(\d{3,10})/i]);
   const cliente = pick([new RegExp("(?:cliente|nome(?:\\s+do\\s+cliente)?|raz[ãa]o\\s+social|destinat[áa]rio)\\s*[:\\-]\\s*([^\\n]+?)" + fim, "i")]);
   const cidade = pick([/(?:cidade|munic[íi]pio)\s*[:\-]\s*([^\n/]+?)(?=\s*(?:\/|\s-\s|\s+(?:uf|cep|bairro|fone|telefone|estado|cliente)\b|\n|$))/i]);
-  const tel = pick([/(?:celular|whats(?:app)?|telefone|fone|tel)\s*[:\-]?\s*(\(?\d{2}\)?\s*9?\d{4}[-\s]?\d{4})/i, /(\(?\d{2}\)?\s*9\d{4}[-\s]?\d{4})/]);
+  const sec = t.slice(Math.max(0, t.search(/cliente/i)));
+  const tel = (() => { for (const r of [/(?:celular|whats(?:app)?|telefone|fone|tel)\s*[:\-]?\s*(\(?\d{2}\)?\s*9\d{4}[-\s]?\d{4})/i, /(\(?\d{2}\)?\s*9\d{4}[-\s]?\d{4})/, /(?:telefone|fone|tel)\s*[:\-]?\s*(\(?\d{2}\)?\s*\d{4}[-\s]?\d{4})/i]) { const m = sec.match(r); if (m && m[1]) return m[1].trim(); } return ""; })();
   return {numero, cliente: titulo(cliente), cidade: titulo(cidade), telefone: tel};
 }
 function pdfBox(){
@@ -168,7 +170,7 @@ function cancelOrder(id){ const o = byId(id); if (o && confirm("Cancelar pedido 
 function zapUrl(o){
   let t = String(o.telefone || "").replace(/\D/g, ""); if (!t) return "";
   if (!t.startsWith("55")) t = "55" + t;
-  const txt = encodeURIComponent("Olá" + (o.cliente ? ", " + o.cliente : "") + "! Seu pedido " + o.numero + " está pronto para retirada no Atacadão Pefisa.");
+  const txt = encodeURIComponent("Olá" + (o.cliente ? ", " + o.cliente : "") + "! Seu pedido " + o.numero + " está pronto para retirada no Atacadão Pefisa. Consulte seu pedido: " + SITE + "consulta.html?pedido=" + encodeURIComponent(o.numero));
   return `https://wa.me/${t}?text=${txt}`;
 }
 const zap = o => { const u = zapUrl(o); return u ? `<a class="btn ghost" style="text-decoration:none" target="_blank" rel="noopener" href="${u}">WhatsApp</a>` : ""; };
@@ -251,12 +253,13 @@ async function consultar(){
   const q = $("#q").value.trim(); if (!q) return;
   const {data, error} = await sb.rpc("consultar_pedido", {p_numero:q});
   const o = data && data[0];
+  const ola = o && o.cliente ? `Olá, <b>${esc(o.cliente)}</b>! ` : "";
   cRes = error ? '<div class="msg">Erro ao consultar. Tente novamente.</div>'
     : !o ? '<div class="msg">Pedido não encontrado. Confira o número ou fale com o balcão.</div>'
-    : o.status === "pronto" ? `<div class="big" style="color:var(--ok)">✅ Pronto!</div><div class="msg">Pedido ${esc(o.numero)} pode ser retirado no balcão.</div>`
-    : o.status === "retirado" ? `<div class="big">📦 Já retirado</div><div class="msg">Pedido ${esc(o.numero)} foi retirado às ${hora(T(o.picked_at))}.</div>`
-    : o.status === "cancelado" ? `<div class="big">Cancelado</div><div class="msg">Pedido ${esc(o.numero)} foi cancelado. Fale com o balcão.</div>`
-    : `<div class="big" style="color:var(--wait)">⏳ Em preparo</div><div class="msg">Pedido ${esc(o.numero)}. Avisaremos quando estiver pronto.</div>`;
+    : o.status === "pronto" ? `<div class="big" style="color:var(--ok)">✅ Pronto!</div><div class="msg">${ola}Pedido ${esc(o.numero)} pode ser retirado no balcão.</div>`
+    : o.status === "retirado" ? `<div class="big">📦 Já retirado</div><div class="msg">${ola}Pedido ${esc(o.numero)} foi retirado às ${hora(T(o.picked_at))}.</div>`
+    : o.status === "cancelado" ? `<div class="big">Cancelado</div><div class="msg">${ola}Pedido ${esc(o.numero)} foi cancelado. Fale com o balcão.</div>`
+    : `<div class="big" style="color:var(--wait)">⏳ Em preparo</div><div class="msg">${ola}Pedido ${esc(o.numero)}. Avisaremos quando estiver pronto.</div>`;
   $("#res").innerHTML = cRes;
 }
 
