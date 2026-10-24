@@ -52,6 +52,7 @@ h3{margin:4px 0 10px;font-size:15px;color:var(--mut)}
 <main id="app"></main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.0/dist/umd/supabase.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>
 const SB_URL = "https://fgdqkflpirqrelhixpvn.supabase.co";
 const SB_KEY = "sb_publishable_jO5dg7oBFxvup4SJUbaIAQ_PFNDFBlS";
@@ -59,6 +60,7 @@ const sb = supabase.createClient(SB_URL, SB_KEY);
 
 let session = null, orders = [], chan = null, soundOn = false, actx = null, autoZap = true, loginErr = "", cRes = null;
 let view = location.hash === "#consulta" ? "consulta" : "balcao";
+let pdfMsg = "", pdfTxt = "";
 let hf = {q:"", st:"todos", per:"hoje"}, lastCall = {}, flashIds = {};
 const STL = {preparando:"Em preparo", pronto:"Pronto", retirado:"Retirado", cancelado:"Cancelado"};
 
@@ -98,6 +100,46 @@ async function upd(id, patch){
   if (error) alert("Não foi possível salvar: " + error.message);
 }
 const byId = id => orders.find(x => x.id === id);
+
+/* ---------- importar nota (PDF) ---------- */
+function titulo(v){
+  v = (v || "").trim(); if (!v || v !== v.toUpperCase()) return v;
+  return v.toLowerCase().replace(/(^|\s)(\S)/g, (m, a, b) => a + b.toUpperCase()).replace(/\s(De|Da|Do|Das|Dos|E)\s/g, x => x.toLowerCase());
+}
+function extrairNota(t){
+  const pick = rs => { for (const r of rs) { const m = t.match(r); if (m && m[1]) return m[1].trim(); } return ""; };
+  const fim = "(?=\\s+(?:cpf|cnpj|cidade|munic[íi]pio|fone|telefone|tel|celular|whats|endere[çc]o|bairro|cep|ie|rg|uf|data|vendedor)\\b|\\n|$)";
+  const numero = pick([/(?:pedido|or[çc]amento|venda)\s*(?:n[ºo°.]*)?\s*[:#-]?\s*(\d{1,10})/i, /\bn[ºo°.]\s*[:#-]?\s*(\d{3,10})/i]);
+  const cliente = pick([new RegExp("(?:cliente|nome(?:\\s+do\\s+cliente)?|raz[ãa]o\\s+social|destinat[áa]rio)\\s*[:\\-]\\s*([^\\n]+?)" + fim, "i")]);
+  const cidade = pick([/(?:cidade|munic[íi]pio)\s*[:\-]\s*([^\n/]+?)(?=\s*(?:\/|\s-\s|\s+(?:uf|cep|bairro|fone|telefone|estado|cliente)\b|\n|$))/i]);
+  const tel = pick([/(?:celular|whats(?:app)?|telefone|fone|tel)\s*[:\-]?\s*(\(?\d{2}\)?\s*9?\d{4}[-\s]?\d{4})/i, /(\(?\d{2}\)?\s*9\d{4}[-\s]?\d{4})/]);
+  return {numero, cliente: titulo(cliente), cidade: titulo(cidade), telefone: tel};
+}
+function pdfBox(){
+  return pdfMsg + (pdfTxt ? `<details style="margin-top:8px"><summary style="cursor:pointer;color:var(--mut);font-size:13px">Ver texto lido do PDF</summary><pre style="white-space:pre-wrap;font-size:12px;max-height:200px;overflow:auto">${esc(pdfTxt)}</pre></details>` : "");
+}
+async function lerPdf(file){
+  if (!file) return;
+  const show = m => { pdfMsg = `<div class="msg" style="text-align:left">${m}</div>`; const e = $("#pdfmsg"); if (e) e.innerHTML = pdfBox(); };
+  pdfTxt = ""; show("Lendo a nota…");
+  try {
+    pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+    const doc = await pdfjsLib.getDocument({data: await file.arrayBuffer()}).promise;
+    const linhas = [];
+    for (let n = 1; n <= doc.numPages; n++) {
+      const tc = await (await doc.getPage(n)).getTextContent(), rows = {};
+      tc.items.forEach(it => { const y = Math.round(it.transform[5] / 3); (rows[y] = rows[y] || []).push(it); });
+      Object.keys(rows).map(Number).sort((a,b) => b - a).forEach(y =>
+        linhas.push(rows[y].sort((a,b) => a.transform[4] - b.transform[4]).map(i => i.str).join(" ").replace(/\s+/g, " ").trim()));
+    }
+    pdfTxt = linhas.filter(Boolean).join("\n");
+    if (pdfTxt.length < 20) { pdfTxt = ""; show("Não encontrei texto neste PDF (parece uma imagem escaneada). Preencha os dados manualmente."); return; }
+    const d = extrairNota(pdfTxt), map = {fn:d.numero, fc:d.cliente, fd:d.cidade, ft:d.telefone};
+    Object.entries(map).forEach(([id, v]) => { if (v && $("#"+id)) $("#"+id).value = v; });
+    const falt = [["Nº do pedido", d.numero], ["Nome", d.cliente], ["Cidade", d.cidade], ["Telefone", d.telefone]].filter(x => !x[1]).map(x => x[0]);
+    show("✅ Dados preenchidos abaixo. Confira e toque em <b>Adicionar à fila</b>." + (falt.length ? "<br>Não encontrei: " + falt.join(", ") + "." : ""));
+  } catch (e) { show("Não consegui ler este PDF. Preencha manualmente."); }
+}
 
 async function addOrder(){
   const n = $("#fn").value.trim(), nome = $("#fc").value.trim(), cid = $("#fd").value.trim(), tel = $("#ft").value.trim();
@@ -175,7 +217,10 @@ function vBalcao(){
       ? `<button class="btn ghost" onclick="recall('${o.id}')">🔔 Chamar</button>${zap(o)}<button class="btn ok" onclick="finish('${o.id}')">Retirado</button><button class="btn ghost" onclick="back('${o.id}')">↩</button>`
       : `<button class="btn ok" onclick="setReady('${o.id}')">Pronto ✓</button><button class="btn ghost" onclick="cancelOrder('${o.id}')">✕</button>`}
   </div>`;
-  return `<div class="card"><h3>Novo pedido</h3>
+  return `<div class="card"><h3>Importar nota do pedido (PDF)</h3>
+    <input type="file" id="pdf" accept="application/pdf" onchange="lerPdf(this.files[0])">
+    <div id="pdfmsg">${pdfBox()}</div></div>
+  <div class="card"><h3>Novo pedido</h3>
     <input id="fn" placeholder="Nº do pedido" autocomplete="off">
     <input id="fc" placeholder="Nome completo do cliente (com sobrenome)" autocomplete="off">
     <input id="fd" placeholder="Cidade" autocomplete="off">
