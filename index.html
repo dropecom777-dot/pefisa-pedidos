@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pedidos Prontos – Atacadão Pefisa</title>
+<style>
+:root{--bg:#f5f6f8;--card:#fff;--tx:#14181f;--mut:#667085;--bd:#e1e4ea;--pri:#0b5fff;--ok:#12805c;--okbg:#e2f6ee;--wait:#b25e09;--waitbg:#fff1dc;--danger:#c0362c}
+@media (prefers-color-scheme:dark){:root{color-scheme:dark;--bg:#0f1218;--card:#1a1f29;--tx:#f1f3f7;--mut:#9aa3b2;--bd:#2b3240;--pri:#5b8cff;--ok:#4cd6a0;--okbg:#10382b;--wait:#ffb55c;--waitbg:#3b2a10;--danger:#ff7a6e}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;min-height:100vh}
+header{display:flex;align-items:center;gap:8px;padding:12px 14px;background:var(--card);border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:5;flex-wrap:wrap}
+header b{font-size:16px;flex:1;white-space:nowrap}
+nav{display:flex;gap:6px;flex-wrap:wrap}
+nav button{border:1px solid var(--bd);background:var(--bg);color:var(--tx);padding:8px 12px;border-radius:999px;font-size:14px;cursor:pointer}
+nav button.on{background:var(--pri);color:#fff;border-color:var(--pri)}
+main{padding:14px;max-width:960px;margin:0 auto}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:14px;margin-bottom:12px}
+input{width:100%;padding:12px;border:1px solid var(--bd);border-radius:10px;background:var(--bg);color:var(--tx);font-size:16px;margin-bottom:8px}
+.btn{border:0;border-radius:10px;padding:11px 14px;font-size:15px;font-weight:600;cursor:pointer;background:var(--pri);color:#fff}
+.btn.ok{background:var(--ok)}.btn.ghost{background:var(--bg);color:var(--tx);border:1px solid var(--bd)}
+.row{display:flex;align-items:center;gap:8px;padding:10px 0;border-top:1px solid var(--bd);flex-wrap:wrap}
+.row:first-child{border-top:0}
+.num{font-size:22px;font-weight:800;min-width:64px}
+.info{flex:1;min-width:120px}.info small{color:var(--mut);display:block}
+.tag{font-size:12px;font-weight:700;padding:3px 9px;border-radius:999px}
+.tag.w{background:var(--waitbg);color:var(--wait)}.tag.r{background:var(--okbg);color:var(--ok)}
+h3{margin:4px 0 10px;font-size:15px;color:var(--mut)}
+.tv{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:620px){.tv{grid-template-columns:1fr}}
+.tv .col{border-radius:16px;padding:14px;min-height:260px}
+.tv .col.p{background:var(--waitbg)}.tv .col.r{background:var(--okbg)}
+.tv h2{margin:0 0 12px;font-size:18px}
+.tv .col.p h2{color:var(--wait)}.tv .col.r h2{color:var(--ok)}
+.chips{display:flex;flex-wrap:wrap;gap:10px}
+.chip{background:var(--card);border-radius:14px;padding:10px 16px;font-weight:800;font-size:clamp(28px,6vw,52px);line-height:1.1;text-align:center}
+.chip small{display:block;font-size:13px;font-weight:500;color:var(--mut)}
+.col.r .chip{color:var(--ok)}
+.flash{animation:fl 1s ease-in-out 8}
+@keyframes fl{50%{background:var(--ok);color:#fff}}
+.big{font-size:clamp(34px,9vw,72px);font-weight:800;text-align:center;margin:16px 0 4px}
+.msg{text-align:center;color:var(--mut)}
+.empty{color:var(--mut);font-size:14px;padding:8px 0}
+.err{color:var(--danger);font-size:14px;margin:4px 0 8px}
+</style>
+</head>
+<body>
+<header>
+  <b>🛒 Atacadão Pefisa</b>
+  <nav id="nav"></nav>
+</header>
+<main id="app"></main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.0/dist/umd/supabase.js"></script>
+<script>
+const SB_URL = "https://fgdqkflpirqrelhixpvn.supabase.co";
+const SB_KEY = "sb_publishable_jO5dg7oBFxvup4SJUbaIAQ_PFNDFBlS";
+const sb = supabase.createClient(SB_URL, SB_KEY);
+
+let session = null, orders = [], chan = null, soundOn = false, actx = null, autoZap = true, loginErr = "", cRes = null;
+let view = location.hash === "#consulta" ? "consulta" : "balcao";
+let hf = {q:"", st:"todos", per:"hoje"}, lastCall = {}, flashIds = {};
+const STL = {preparando:"Em preparo", pronto:"Pronto", retirado:"Retirado", cancelado:"Cancelado"};
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const T = v => v ? new Date(v).getTime() : null;
+const hora = t => t ? new Date(t).toLocaleTimeString("pt-BR", {hour:"2-digit", minute:"2-digit"}) : "";
+const dia = t => t ? new Date(t).toLocaleDateString("pt-BR") : "";
+const norm = r => ({id:r.id, numero:r.numero, cliente:r.cliente, cidade:r.cidade, telefone:r.telefone, status:r.status,
+  createdAt:T(r.created_at), readyAt:T(r.ready_at), calledAt:T(r.called_at), pickedAt:T(r.picked_at), zapAt:T(r.zap_at)});
+
+/* ---------- dados ---------- */
+async function load(){
+  const since = new Date(Date.now() - 30*864e5).toISOString();
+  const {data, error} = await sb.from("pedidos").select("*").gte("created_at", since).order("created_at", {ascending:false}).limit(2000);
+  if (error) return;
+  orders = data.map(norm);
+  data.forEach(r => { if (r.called_at && lastCall[r.id] === undefined) lastCall[r.id] = T(r.called_at); });
+  render();
+}
+function subscribe(){
+  if (chan) return;
+  chan = sb.channel("pedidos").on("postgres_changes", {event:"*", schema:"public", table:"pedidos"}, p => {
+    if (p.eventType === "DELETE") orders = orders.filter(o => o.id !== p.old.id);
+    else {
+      const o = norm(p.new), i = orders.findIndex(x => x.id === o.id);
+      if (i >= 0) orders[i] = o; else orders.unshift(o);
+      if (o.status === "pronto" && o.calledAt && lastCall[o.id] !== o.calledAt) {
+        lastCall[o.id] = o.calledAt; flashIds[o.id] = Date.now() + 8000; if (view === "telao") beep();
+      }
+    }
+    render();
+  }).subscribe();
+}
+async function upd(id, patch){
+  const {error} = await sb.from("pedidos").update(patch).eq("id", id);
+  if (error) alert("Não foi possível salvar: " + error.message);
+}
+const byId = id => orders.find(x => x.id === id);
+
+async function addOrder(){
+  const n = $("#fn").value.trim(), nome = $("#fc").value.trim(), cid = $("#fd").value.trim(), tel = $("#ft").value.trim();
+  if (!n) { $("#fn").focus(); return; }
+  const {error} = await sb.from("pedidos").insert({numero:n, cliente:nome || null, cidade:cid || null, telefone:tel || null});
+  if (error) {
+    alert(error.code === "23505" ? "Já existe um pedido ativo com o número " + n + "." :
+          error.code === "42501" ? "Seu e-mail não está autorizado a cadastrar pedidos." : "Erro: " + error.message);
+    return;
+  }
+  ["#fn","#fc","#fd","#ft"].forEach(s => $(s).value = ""); $("#fn").focus();
+}
+function setReady(id){
+  const o = byId(id); if (!o) return;
+  const z = autoZap && o.telefone ? zapUrl(o) : "";
+  if (z) window.open(z, "_blank", "noopener");
+  const now = new Date().toISOString();
+  upd(id, {status:"pronto", ready_at:now, called_at:now, zap_at: z ? now : (o.zapAt ? new Date(o.zapAt).toISOString() : null)});
+}
+const recall = id => upd(id, {called_at:new Date().toISOString()});
+const finish = id => upd(id, {status:"retirado", picked_at:new Date().toISOString()});
+const back = id => upd(id, {status:"preparando", ready_at:null, called_at:null});
+const reopen = id => upd(id, {status:"preparando", ready_at:null, called_at:null, picked_at:null, canceled_at:null});
+function cancelOrder(id){ const o = byId(id); if (o && confirm("Cancelar pedido " + o.numero + "?")) upd(id, {status:"cancelado", canceled_at:new Date().toISOString()}); }
+
+function zapUrl(o){
+  let t = String(o.telefone || "").replace(/\D/g, ""); if (!t) return "";
+  if (!t.startsWith("55")) t = "55" + t;
+  const txt = encodeURIComponent("Olá" + (o.cliente ? ", " + o.cliente : "") + "! Seu pedido " + o.numero + " está pronto para retirada no Atacadão Pefisa.");
+  return `https://wa.me/${t}?text=${txt}`;
+}
+const zap = o => { const u = zapUrl(o); return u ? `<a class="btn ghost" style="text-decoration:none" target="_blank" rel="noopener" href="${u}">WhatsApp</a>` : ""; };
+
+function beep(){
+  if (!soundOn || !actx) return;
+  [880, 1175, 880].forEach((f, i) => {
+    const o = actx.createOscillator(), g = actx.createGain();
+    o.frequency.value = f; o.connect(g); g.connect(actx.destination);
+    const t = actx.currentTime + i * 0.28;
+    g.gain.setValueAtTime(0.25, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.25);
+    o.start(t); o.stop(t + 0.26);
+  });
+}
+function enableSound(){ try { actx = actx || new (window.AudioContext || window.webkitAudioContext)(); actx.resume(); soundOn = true; beep(); } catch (e) {} render(); }
+
+/* ---------- login ---------- */
+async function login(){
+  loginErr = "";
+  const {error} = await sb.auth.signInWithPassword({email:$("#em").value.trim(), password:$("#pw").value});
+  if (error) { loginErr = "E-mail ou senha incorretos."; render(); }
+}
+const logout = () => sb.auth.signOut();
+sb.auth.onAuthStateChange((ev, s) => {
+  session = s;
+  if (s) { load(); subscribe(); }
+  else { orders = []; if (chan) { sb.removeChannel(chan); chan = null; } }
+  render();
+});
+
+/* ---------- telas ---------- */
+function vLogin(){
+  return `<div class="card"><h3>Acesso da equipe</h3>
+    <input id="em" type="email" placeholder="E-mail" autocomplete="username">
+    <input id="pw" type="password" placeholder="Senha" autocomplete="current-password" onkeydown="if(event.key==='Enter')login()">
+    ${loginErr ? `<div class="err">${loginErr}</div>` : ""}
+    <button class="btn" style="width:100%" onclick="login()">Entrar</button></div>`;
+}
+function vBalcao(){
+  const prep = orders.filter(o => o.status === "preparando").sort((a,b) => a.createdAt - b.createdAt);
+  const pr = orders.filter(o => o.status === "pronto").sort((a,b) => b.readyAt - a.readyAt);
+  const line = (o, ready) => `<div class="row">
+    <div class="num">${esc(o.numero)}</div>
+    <div class="info"><b>${esc(o.cliente) || "Sem nome"}</b><small>${o.cidade ? esc(o.cidade) + " · " : ""}${ready ? "Pronto às " + hora(o.readyAt) : "Entrou às " + hora(o.createdAt)}</small></div>
+    ${ready
+      ? `<button class="btn ghost" onclick="recall('${o.id}')">🔔 Chamar</button>${zap(o)}<button class="btn ok" onclick="finish('${o.id}')">Retirado</button><button class="btn ghost" onclick="back('${o.id}')">↩</button>`
+      : `<button class="btn ok" onclick="setReady('${o.id}')">Pronto ✓</button><button class="btn ghost" onclick="cancelOrder('${o.id}')">✕</button>`}
+  </div>`;
+  return `<div class="card"><h3>Novo pedido</h3>
+    <input id="fn" placeholder="Nº do pedido" autocomplete="off">
+    <input id="fc" placeholder="Nome completo do cliente (com sobrenome)" autocomplete="off">
+    <input id="fd" placeholder="Cidade" autocomplete="off">
+    <input id="ft" placeholder="WhatsApp com DDD (opcional)" inputmode="tel" autocomplete="off">
+    <label style="display:flex;gap:8px;align-items:center;font-size:14px;margin:4px 0 10px"><input type="checkbox" style="width:auto;margin:0" ${autoZap ? "checked" : ""} onchange="autoZap=this.checked"> Abrir WhatsApp com a mensagem ao marcar “Pronto”</label>
+    <button class="btn" style="width:100%" onclick="addOrder()">Adicionar à fila</button></div>
+  <div class="card"><h3>Em preparo (${prep.length})</h3>${prep.map(o => line(o,false)).join("") || '<div class="empty">Nenhum pedido em preparo.</div>'}</div>
+  <div class="card"><h3>Prontos para retirada (${pr.length})</h3>${pr.map(o => line(o,true)).join("") || '<div class="empty">Nenhum pedido pronto.</div>'}</div>`;
+}
+function vTelao(){
+  const prep = orders.filter(o => o.status === "preparando").sort((a,b) => a.createdAt - b.createdAt);
+  const pr = orders.filter(o => o.status === "pronto").sort((a,b) => b.readyAt - a.readyAt);
+  const now = Date.now();
+  const chip = (o, f) => `<div class="chip ${f && flashIds[o.id] > now ? "flash" : ""}">${esc(o.numero)}${o.cliente ? "<small>" + esc(o.cliente) + (o.cidade ? " · " + esc(o.cidade) : "") + "</small>" : ""}</div>`;
+  return `${soundOn ? "" : '<button class="btn" style="width:100%;margin-bottom:12px" onclick="enableSound()">🔊 Ativar som de alerta</button>'}
+  <div class="tv">
+    <div class="col p"><h2>⏳ Em preparo</h2><div class="chips">${prep.map(o => chip(o,false)).join("") || '<span class="empty">—</span>'}</div></div>
+    <div class="col r"><h2>✅ Pronto para retirada</h2><div class="chips">${pr.map(o => chip(o,true)).join("") || '<span class="empty">—</span>'}</div></div>
+  </div>`;
+}
+function vConsulta(){
+  return `<div class="card"><h3>Consultar meu pedido</h3>
+    <input id="q" placeholder="Digite o nº do pedido" autocomplete="off" onkeydown="if(event.key==='Enter')consultar()">
+    <button class="btn" style="width:100%" onclick="consultar()">Consultar</button>
+    <div id="res">${cRes || ""}</div></div>`;
+}
+async function consultar(){
+  const q = $("#q").value.trim(); if (!q) return;
+  const {data, error} = await sb.rpc("consultar_pedido", {p_numero:q});
+  const o = data && data[0];
+  cRes = error ? '<div class="msg">Erro ao consultar. Tente novamente.</div>'
+    : !o ? '<div class="msg">Pedido não encontrado. Confira o número ou fale com o balcão.</div>'
+    : o.status === "pronto" ? `<div class="big" style="color:var(--ok)">✅ Pronto!</div><div class="msg">Pedido ${esc(o.numero)} pode ser retirado no balcão.</div>`
+    : o.status === "retirado" ? `<div class="big">📦 Já retirado</div><div class="msg">Pedido ${esc(o.numero)} foi retirado às ${hora(T(o.picked_at))}.</div>`
+    : o.status === "cancelado" ? `<div class="big">Cancelado</div><div class="msg">Pedido ${esc(o.numero)} foi cancelado. Fale com o balcão.</div>`
+    : `<div class="big" style="color:var(--wait)">⏳ Em preparo</div><div class="msg">Pedido ${esc(o.numero)}. Avisaremos quando estiver pronto.</div>`;
+  $("#res").innerHTML = cRes;
+}
+
+function histList(){
+  const n = new Date(), d0 = new Date(n.getFullYear(), n.getMonth(), n.getDate()).getTime();
+  const lim = hf.per === "hoje" ? d0 : hf.per === "7d" ? d0 - 6*864e5 : d0 - 29*864e5;
+  const q = hf.q.toLowerCase();
+  return orders.filter(o => o.createdAt >= lim && (hf.st === "todos" || o.status === hf.st) &&
+    (!q || [o.numero, o.cliente, o.cidade, o.telefone].some(v => String(v || "").toLowerCase().includes(q))))
+    .sort((a,b) => b.createdAt - a.createdAt);
+}
+const setHf = (k, v) => { hf[k] = v; render(); };
+const mins = (a, b) => a && b ? Math.round((b - a) / 60000) + " min" : "—";
+function histRows(L){
+  return L.map(o => `<div class="row">
+    <div class="num">${esc(o.numero)}</div>
+    <div class="info"><b>${esc(o.cliente) || "Sem nome"}</b>
+      <small>${o.cidade ? esc(o.cidade) + " · " : ""}${dia(o.createdAt)} ${hora(o.createdAt)}${o.readyAt ? " · pronto " + hora(o.readyAt) + " (" + mins(o.createdAt, o.readyAt) + ")" : ""}${o.pickedAt ? " · retirado " + hora(o.pickedAt) : ""}${o.zapAt ? " · WhatsApp " + hora(o.zapAt) : ""}</small></div>
+    <span class="tag ${o.status === "pronto" || o.status === "retirado" ? "r" : "w"}">${STL[o.status]}</span>
+    ${o.status === "retirado" || o.status === "cancelado" ? `<button class="btn ghost" onclick="reopen('${o.id}')">Reabrir</button>` : ""}
+  </div>`).join("") || '<div class="empty">Nenhum pedido neste filtro.</div>';
+}
+function vHistorico(){
+  const L = histList(), cnt = s => L.filter(o => o.status === s).length;
+  const seg = (k, opts) => opts.map(([v, t]) => `<button class="btn ${hf[k] === v ? "" : "ghost"}" style="padding:8px 12px;font-size:14px" onclick="setHf('${k}','${v}')">${t}</button>`).join(" ");
+  return `<div class="card"><h3>Histórico (últimos 30 dias)</h3>
+    <input placeholder="Buscar por nº, nome, cidade ou telefone" value="${esc(hf.q)}" autocomplete="off" oninput="hf.q=this.value;$('#hl').innerHTML=histRows(histList())">
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px">${seg("per", [["hoje","Hoje"],["7d","7 dias"],["30d","30 dias"]])}</div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">${seg("st", [["todos","Todos"],["preparando","Preparo"],["pronto","Prontos"],["retirado","Retirados"],["cancelado","Cancelados"]])}</div>
+    <div class="msg" style="text-align:left;margin-bottom:6px">${L.length} pedidos · ${cnt("retirado")} retirados · ${cnt("cancelado")} cancelados</div>
+    <button class="btn ghost" onclick="exportCsv()">⬇ Exportar CSV</button></div>
+    <div class="card" id="hl">${histRows(L)}</div>`;
+}
+function exportCsv(){
+  const c = v => '"' + String(v == null ? "" : v).replace(/"/g, '""') + '"';
+  const f = t => t ? new Date(t).toLocaleString("pt-BR") : "";
+  const rows = [["Pedido","Cliente","Cidade","Telefone","Status","Entrada","Pronto","Retirado","WhatsApp"]].concat(
+    histList().map(o => [o.numero, o.cliente, o.cidade, o.telefone, STL[o.status], f(o.createdAt), f(o.readyAt), f(o.pickedAt), f(o.zapAt)]));
+  const blob = new Blob(["\uFEFF" + rows.map(r => r.map(c).join(";")).join("\n")], {type:"text/csv;charset=utf-8"});
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "historico-pedidos-pefisa.csv"; a.click();
+}
+
+function render(){
+  const tabs = session ? [["balcao","Balcão"],["telao","Telão"],["consulta","Consulta"],["historico","Histórico"]] : [["balcao","Equipe"],["consulta","Consulta"]];
+  $("#nav").innerHTML = tabs.map(([v,t]) => `<button class="${view === v ? "on" : ""}" onclick="view='${v}';render()">${t}</button>`).join("") +
+    (session ? '<button onclick="logout()">Sair</button>' : "");
+  if (!session && view !== "consulta") view = "balcao";
+  const keep = ["fn","fc","fd","ft","q"].map(i => $("#"+i) ? $("#"+i).value : null);
+  const active = document.activeElement && document.activeElement.id;
+  $("#app").innerHTML = view === "consulta" ? vConsulta() : !session ? vLogin() :
+    view === "balcao" ? vBalcao() : view === "telao" ? vTelao() : vHistorico();
+  ["fn","fc","fd","ft","q"].forEach((i, k) => { if (keep[k] && $("#"+i)) $("#"+i).value = keep[k]; });
+  if (active && $("#"+active)) $("#"+active).focus();
+}
+document.addEventListener("keydown", e => { if (e.key === "Enter" && /^f[ncdt]$/.test(e.target.id || "")) addOrder(); });
+setInterval(() => { if (session) { if (view === "telao") render(); } }, 4000);
+setInterval(() => { if (session) load(); }, 60000);
+render();
+</script>
+</body>
+</html>
