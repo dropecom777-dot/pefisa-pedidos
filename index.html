@@ -9,8 +9,9 @@
 @media (prefers-color-scheme:dark){:root{color-scheme:dark;--bg:#0f1218;--card:#1a1f29;--tx:#f1f3f7;--mut:#9aa3b2;--bd:#2b3240;--pri:#5b8cff;--ok:#4cd6a0;--okbg:#10382b;--wait:#ffb55c;--waitbg:#3b2a10;--danger:#ff7a6e;--sep:#8fb0ff;--sepbg:#16264a}}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;min-height:100vh}
-header{display:flex;align-items:center;gap:8px;padding:12px 14px;background:var(--card);border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:5;flex-wrap:wrap}
-header b{font-size:16px;flex:1;white-space:nowrap}
+header{display:flex;align-items:center;gap:8px;padding:12px 14px;background:var(--card);border-bottom:4px solid var(--pri);position:sticky;top:0;z-index:5;flex-wrap:wrap}
+header b{font-size:16px;white-space:nowrap}
+.brand{flex:1;display:flex;align-items:center;min-width:120px}.brand img{height:42px;max-width:100%;object-fit:contain}
 nav{display:flex;gap:6px;flex-wrap:wrap}
 nav button{border:1px solid var(--bd);background:var(--bg);color:var(--tx);padding:8px 12px;border-radius:999px;font-size:14px;cursor:pointer}
 nav button.on{background:var(--pri);color:#fff;border-color:var(--pri)}
@@ -21,8 +22,8 @@ input{width:100%;padding:12px;border:1px solid var(--bd);border-radius:10px;back
 .btn.ok{background:var(--ok)}.btn.ghost{background:var(--bg);color:var(--tx);border:1px solid var(--bd)}
 .row{display:flex;align-items:center;gap:8px;padding:10px 0;border-top:1px solid var(--bd);flex-wrap:wrap}
 .row:first-child{border-top:0}
-.num{font-size:22px;font-weight:800;min-width:64px}
-.info{flex:1;min-width:120px}.info small{color:var(--mut);display:block}
+.num{font-size:14px;font-weight:700;min-width:56px;color:var(--mut)}
+.info{flex:1;min-width:120px}.info b{font-size:20px;line-height:1.2;display:block}.info .cid{display:block;font-size:16px;font-weight:600}.info small{color:var(--mut);display:block;margin-top:2px}
 .tag{font-size:12px;font-weight:700;padding:3px 9px;border-radius:999px}
 .tag.s{background:var(--sepbg);color:var(--sep)}.tag.w{background:var(--waitbg);color:var(--wait)}.tag.r{background:var(--okbg);color:var(--ok)}
 h3{margin:4px 0 10px;font-size:15px;color:var(--mut)}
@@ -32,12 +33,16 @@ h3{margin:4px 0 10px;font-size:15px;color:var(--mut)}
 .tv .col.s{background:var(--sepbg)}.tv .col.p{background:var(--waitbg)}.tv .col.r{background:var(--okbg)}
 .tv h2{margin:0 0 12px;font-size:18px}
 .tv .col.s h2{color:var(--sep)}.tv .col.p h2{color:var(--wait)}.tv .col.r h2{color:var(--ok)}
-.chips{display:flex;flex-wrap:wrap;gap:10px}
-.chip{background:var(--card);border-radius:14px;padding:10px 16px;font-weight:800;font-size:clamp(28px,6vw,52px);line-height:1.1;text-align:center}
-.chip small{display:block;font-size:13px;font-weight:500;color:var(--mut)}
-.col.r .chip{color:var(--ok)}
+.chips{display:flex;flex-direction:column;gap:10px}
+.chip{background:var(--card);border-radius:14px;padding:12px 16px;text-align:left;line-height:1.15}
+.chip .cn{display:block;font-size:14px;font-weight:700;color:var(--mut)}
+.chip .nm{display:block;font-size:clamp(22px,3vw,32px);font-weight:800;margin-top:2px}
+.chip .ct{display:block;font-size:clamp(16px,2.2vw,22px);font-weight:600;margin-top:3px}
+.col.r .chip .nm{color:var(--ok)}
 .flash{animation:fl 1s ease-in-out 8}
-@keyframes fl{50%{background:var(--ok);color:#fff}}
+.flash .cn,.flash .nm,.flash .ct{animation:flt 1s ease-in-out 8}
+@keyframes fl{50%{background:var(--ok)}}
+@keyframes flt{50%{color:#fff}}
 .big{font-size:clamp(26px,7vw,44px);font-weight:800;text-align:center;margin:16px 0 4px}
 .msg{text-align:center;color:var(--mut)}
 .empty{color:var(--mut);font-size:14px;padding:8px 0}
@@ -46,7 +51,7 @@ h3{margin:4px 0 10px;font-size:15px;color:var(--mut)}
 </head>
 <body>
 <header>
-  <b>🛒 Atacadão Pefisa</b>
+  <div class="brand"><img id="logo" src="logo.png" alt="Atacadão Pefisa" onerror="this.style.display='none';document.getElementById('brandtx').style.display='inline'"><b id="brandtx" style="display:none">🛒 Atacadão Pefisa</b></div>
   <nav id="nav"></nav>
 </header>
 <main id="app"></main>
@@ -214,8 +219,8 @@ function vBalcao(){
   const sep = orders.filter(o => o.status === "separando").sort((a,b) => (a.sepAt || 0) - (b.sepAt || 0));
   const pr = orders.filter(o => o.status === "pronto").sort((a,b) => b.readyAt - a.readyAt);
   const line = (o, m) => `<div class="row">
-    <div class="num">${esc(o.numero)}</div>
-    <div class="info"><b>${esc(o.cliente) || "Sem nome"}</b><small>${o.cidade ? esc(o.cidade) + " · " : ""}${m === 2 ? "Pronto às " + hora(o.readyAt) : m === 1 ? "Separando desde " + hora(o.sepAt) : "Entrou às " + hora(o.createdAt)}</small></div>
+    <div class="num">Nº ${esc(o.numero)}</div>
+    <div class="info"><b>${esc(o.cliente) || "Sem nome"}</b>${o.cidade ? `<span class="cid">${esc(o.cidade)}</span>` : ""}<small>${m === 2 ? "Pronto às " + hora(o.readyAt) : m === 1 ? "Separando desde " + hora(o.sepAt) : "Entrou às " + hora(o.createdAt)}</small></div>
     ${m === 2
       ? `<button class="btn ghost" onclick="recall('${o.id}')">🔔 Chamar</button>${zap(o)}<button class="btn ok" onclick="finish('${o.id}')">Retirado</button><button class="btn ghost" onclick="back('${o.id}')">↩</button>`
       : m === 1
@@ -241,7 +246,7 @@ function vTelao(){
   const pr = orders.filter(o => o.status === "pronto").sort((a,b) => b.readyAt - a.readyAt);
   const now = Date.now();
   const sep = orders.filter(o => o.status === "separando").sort((a,b) => (a.sepAt || 0) - (b.sepAt || 0));
-  const chip = (o, f) => `<div class="chip ${f && flashIds[o.id] > now ? "flash" : ""}">${esc(o.numero)}${o.cliente ? "<small>" + esc(o.cliente) + (o.cidade ? " · " + esc(o.cidade) : "") + "</small>" : ""}</div>`;
+  const chip = (o, f) => `<div class="chip ${f && flashIds[o.id] > now ? "flash" : ""}"><span class="cn">Nº ${esc(o.numero)}</span><b class="nm">${esc(o.cliente) || "Sem nome"}</b>${o.cidade ? `<span class="ct">${esc(o.cidade)}</span>` : ""}</div>`;
   return `${soundOn ? "" : '<button class="btn" style="width:100%;margin-bottom:12px" onclick="enableSound()">🔊 Ativar som de alerta</button>'}
   <div class="tv">
     <div class="col p"><h2>⏳ Pendente</h2><div class="chips">${prep.map(o => chip(o,false)).join("") || '<span class="empty">—</span>'}</div></div>
@@ -285,9 +290,9 @@ const setHf = (k, v) => { hf[k] = v; render(); };
 const mins = (a, b) => a && b ? Math.round((b - a) / 60000) + " min" : "—";
 function histRows(L){
   return L.map(o => `<div class="row">
-    <div class="num">${esc(o.numero)}</div>
-    <div class="info"><b>${esc(o.cliente) || "Sem nome"}</b>
-      <small>${o.cidade ? esc(o.cidade) + " · " : ""}${dia(o.createdAt)} ${hora(o.createdAt)}${o.sepAt ? " · separando " + hora(o.sepAt) : ""}${o.readyAt ? " · pronto " + hora(o.readyAt) + " (" + mins(o.createdAt, o.readyAt) + ")" : ""}${o.pickedAt ? " · retirado " + hora(o.pickedAt) : ""}${o.zapAt ? " · WhatsApp " + hora(o.zapAt) : ""}</small></div>
+    <div class="num">Nº ${esc(o.numero)}</div>
+    <div class="info"><b>${esc(o.cliente) || "Sem nome"}</b>${o.cidade ? `<span class="cid">${esc(o.cidade)}</span>` : ""}
+      <small>${dia(o.createdAt)} ${hora(o.createdAt)}${o.sepAt ? " · separando " + hora(o.sepAt) : ""}${o.readyAt ? " · pronto " + hora(o.readyAt) + " (" + mins(o.createdAt, o.readyAt) + ")" : ""}${o.pickedAt ? " · retirado " + hora(o.pickedAt) : ""}${o.zapAt ? " · WhatsApp " + hora(o.zapAt) : ""}</small></div>
     <span class="tag ${o.status === "pronto" || o.status === "retirado" ? "r" : o.status === "separando" ? "s" : "w"}">${STL[o.status]}</span>
     ${o.status === "retirado" || o.status === "cancelado" ? `<button class="btn ghost" onclick="reopen('${o.id}')">Reabrir</button>` : ""}
   </div>`).join("") || '<div class="empty">Nenhum pedido neste filtro.</div>';
