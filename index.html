@@ -7,17 +7,19 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<title>Gestão de Pedidos – Atacadão Pefisa</title>
+<title>Pedidos Prontos – Atacadão Pefisa</title>
 <style>
 :root{color-scheme:light;--bg:#e3e8f1;--card:#f6f8fc;--field:#eceff7;--tx:#1b2236;--mut:#5a6579;--bd:#c8d1e2;--pri:#262e77;--ok:#16704a;--okbg:#d4ebdd;--wait:#9a5607;--waitbg:#f6e3bd;--danger:#b3261e;--sep:#0b6e9e;--sepbg:#d1e6f3}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--tx);font-family:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:15px;line-height:1.4;-webkit-font-smoothing:antialiased;min-height:100vh}
-header{display:flex;align-items:center;justify-content:center;gap:8px;padding:10px 16px;background:var(--pri);color:#fff;border-bottom:5px solid;border-image:linear-gradient(90deg,#e4111c,#8f1d4f,#262e77 55%,#08abe6) 1;position:sticky;top:0;z-index:5;flex-wrap:wrap;box-shadow:0 2px 8px rgba(20,30,70,.25)}
+header{display:flex;align-items:center;justify-content:center;gap:8px;padding:8px 16px;background:var(--pri);color:#fff;border-bottom:5px solid;border-image:linear-gradient(90deg,#e4111c,#8f1d4f,#262e77 55%,#08abe6) 1;flex-wrap:wrap;box-shadow:0 2px 8px rgba(20,30,70,.25)}
 .brand{flex:1 1 100%;display:flex;align-items:center;justify-content:center;gap:12px}.brand img{height:58px;width:58px;border-radius:50%;flex:none;box-shadow:0 0 0 2px rgba(255,255,255,.5)}.brand b{font-size:18px;font-weight:700;letter-spacing:-.01em;color:#fff}
 nav{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;width:100%}
-nav button{border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.1);color:#e6e9ff;padding:8px 14px;border-radius:8px;font-weight:600;font-size:14px;font-family:inherit;cursor:pointer}
-nav button:hover{background:rgba(255,255,255,.2)}
-nav button.on{background:var(--card);color:var(--pri);border-color:var(--card)}
+nav button{border:1px solid var(--bd);background:var(--field);color:var(--pri);padding:9px 16px;border-radius:8px;font-weight:600;font-size:14px;font-family:inherit;cursor:pointer}
+nav button:hover{background:#dfe5f3}
+nav button.on{background:var(--pri);color:#fff;border-color:var(--pri)}
+.top{position:sticky;top:0;z-index:5}
+.tabs{background:var(--card);border-bottom:1px solid var(--bd);padding:9px 16px;box-shadow:0 2px 6px rgba(20,30,70,.08)}
 main{padding:16px;max-width:980px;margin:0 auto}
 .card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:14px;box-shadow:0 1px 3px rgba(20,30,70,.08)}
 input{width:100%;padding:12px;border:1px solid var(--bd);border-radius:8px;background:var(--field);color:var(--tx);font:inherit;font-size:16px;margin-bottom:8px}
@@ -35,7 +37,7 @@ input:focus{outline:2px solid var(--pri);outline-offset:-1px;background:#fff}
 .tag.s{background:var(--sepbg);color:var(--sep)}.tag.w{background:var(--waitbg);color:var(--wait)}.tag.r{background:var(--okbg);color:var(--ok)}
 h3{margin:2px 0 12px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)}
 .tv{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;height:calc(100vh - 32px)}
-body.tvmode header{display:none}
+body.tvmode .top{display:none}
 main.full{max-width:none;padding:16px}
 .tvbar{position:fixed;right:10px;bottom:10px;display:flex;gap:6px;z-index:9;opacity:.45}.tvbar:hover{opacity:1}
 @media(max-width:820px){.tv{grid-template-columns:1fr;height:auto}.tv .col{min-height:180px}}
@@ -60,10 +62,12 @@ main.full{max-width:none;padding:16px}
 </style>
 </head>
 <body>
+<div class="top">
 <header>
   <div class="brand"><img class="lg" alt="Logo Atacadão Pefisa"><b>Atacadão Pefisa</b></div>
-  <nav id="nav"></nav>
 </header>
+<div class="tabs"><nav id="nav"></nav></div>
+</div>
 <main id="app"></main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.0/dist/umd/supabase.js"></script>
