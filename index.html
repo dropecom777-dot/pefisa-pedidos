@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Pedidos Prontos – Atacadão Pefisa</title>
 <style>
-:root{--bg:#f5f6f8;--card:#fff;--tx:#14181f;--mut:#667085;--bd:#e1e4ea;--pri:#0b5fff;--ok:#12805c;--okbg:#e2f6ee;--wait:#b25e09;--waitbg:#fff1dc;--danger:#c0362c}
-@media (prefers-color-scheme:dark){:root{color-scheme:dark;--bg:#0f1218;--card:#1a1f29;--tx:#f1f3f7;--mut:#9aa3b2;--bd:#2b3240;--pri:#5b8cff;--ok:#4cd6a0;--okbg:#10382b;--wait:#ffb55c;--waitbg:#3b2a10;--danger:#ff7a6e}}
+:root{--bg:#f5f6f8;--card:#fff;--tx:#14181f;--mut:#667085;--bd:#e1e4ea;--pri:#0b5fff;--ok:#12805c;--okbg:#e2f6ee;--wait:#b25e09;--waitbg:#fff1dc;--danger:#c0362c;--sep:#1f5fd1;--sepbg:#e3ecff}
+@media (prefers-color-scheme:dark){:root{color-scheme:dark;--bg:#0f1218;--card:#1a1f29;--tx:#f1f3f7;--mut:#9aa3b2;--bd:#2b3240;--pri:#5b8cff;--ok:#4cd6a0;--okbg:#10382b;--wait:#ffb55c;--waitbg:#3b2a10;--danger:#ff7a6e;--sep:#8fb0ff;--sepbg:#16264a}}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;min-height:100vh}
 header{display:flex;align-items:center;gap:8px;padding:12px 14px;background:var(--card);border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:5;flex-wrap:wrap}
@@ -24,21 +24,21 @@ input{width:100%;padding:12px;border:1px solid var(--bd);border-radius:10px;back
 .num{font-size:22px;font-weight:800;min-width:64px}
 .info{flex:1;min-width:120px}.info small{color:var(--mut);display:block}
 .tag{font-size:12px;font-weight:700;padding:3px 9px;border-radius:999px}
-.tag.w{background:var(--waitbg);color:var(--wait)}.tag.r{background:var(--okbg);color:var(--ok)}
+.tag.s{background:var(--sepbg);color:var(--sep)}.tag.w{background:var(--waitbg);color:var(--wait)}.tag.r{background:var(--okbg);color:var(--ok)}
 h3{margin:4px 0 10px;font-size:15px;color:var(--mut)}
-.tv{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-@media(max-width:620px){.tv{grid-template-columns:1fr}}
+.tv{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:820px){.tv{grid-template-columns:1fr}}
 .tv .col{border-radius:16px;padding:14px;min-height:260px}
-.tv .col.p{background:var(--waitbg)}.tv .col.r{background:var(--okbg)}
+.tv .col.s{background:var(--sepbg)}.tv .col.p{background:var(--waitbg)}.tv .col.r{background:var(--okbg)}
 .tv h2{margin:0 0 12px;font-size:18px}
-.tv .col.p h2{color:var(--wait)}.tv .col.r h2{color:var(--ok)}
+.tv .col.s h2{color:var(--sep)}.tv .col.p h2{color:var(--wait)}.tv .col.r h2{color:var(--ok)}
 .chips{display:flex;flex-wrap:wrap;gap:10px}
 .chip{background:var(--card);border-radius:14px;padding:10px 16px;font-weight:800;font-size:clamp(28px,6vw,52px);line-height:1.1;text-align:center}
 .chip small{display:block;font-size:13px;font-weight:500;color:var(--mut)}
 .col.r .chip{color:var(--ok)}
 .flash{animation:fl 1s ease-in-out 8}
 @keyframes fl{50%{background:var(--ok);color:#fff}}
-.big{font-size:clamp(34px,9vw,72px);font-weight:800;text-align:center;margin:16px 0 4px}
+.big{font-size:clamp(26px,7vw,44px);font-weight:800;text-align:center;margin:16px 0 4px}
 .msg{text-align:center;color:var(--mut)}
 .empty{color:var(--mut);font-size:14px;padding:8px 0}
 .err{color:var(--danger);font-size:14px;margin:4px 0 8px}
@@ -55,7 +55,6 @@ h3{margin:4px 0 10px;font-size:15px;color:var(--mut)}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>
 const SB_URL = "https://fgdqkflpirqrelhixpvn.supabase.co";
-const SITE = "https://dropecom777-dot.github.io/pefisa-pedidos/";
 const SB_KEY = "sb_publishable_jO5dg7oBFxvup4SJUbaIAQ_PFNDFBlS";
 const sb = supabase.createClient(SB_URL, SB_KEY);
 
@@ -63,7 +62,7 @@ let session = null, orders = [], chan = null, soundOn = false, actx = null, auto
 let view = location.hash === "#consulta" ? "consulta" : "balcao";
 let pdfMsg = "", pdfTxt = "";
 let hf = {q:"", st:"todos", per:"hoje"}, lastCall = {}, flashIds = {};
-const STL = {preparando:"Em preparo", pronto:"Pronto", retirado:"Retirado", cancelado:"Cancelado"};
+const STL = {preparando:"Pendente", separando:"Separando", pronto:"Pronto", retirado:"Retirado", cancelado:"Cancelado"};
 
 const $ = s => document.querySelector(s);
 const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -71,7 +70,7 @@ const T = v => v ? new Date(v).getTime() : null;
 const hora = t => t ? new Date(t).toLocaleTimeString("pt-BR", {hour:"2-digit", minute:"2-digit"}) : "";
 const dia = t => t ? new Date(t).toLocaleDateString("pt-BR") : "";
 const norm = r => ({id:r.id, numero:r.numero, cliente:r.cliente, cidade:r.cidade, telefone:r.telefone, status:r.status,
-  createdAt:T(r.created_at), readyAt:T(r.ready_at), calledAt:T(r.called_at), pickedAt:T(r.picked_at), zapAt:T(r.zap_at)});
+  createdAt:T(r.created_at), sepAt:T(r.separando_at), readyAt:T(r.ready_at), calledAt:T(r.called_at), pickedAt:T(r.picked_at), zapAt:T(r.zap_at)});
 
 /* ---------- dados ---------- */
 async function load(){
@@ -163,14 +162,15 @@ function setReady(id){
 }
 const recall = id => upd(id, {called_at:new Date().toISOString()});
 const finish = id => upd(id, {status:"retirado", picked_at:new Date().toISOString()});
-const back = id => upd(id, {status:"preparando", ready_at:null, called_at:null});
-const reopen = id => upd(id, {status:"preparando", ready_at:null, called_at:null, picked_at:null, canceled_at:null});
+const separar = id => upd(id, {status:"separando", separando_at:new Date().toISOString()});
+const back = id => upd(id, {status:"separando", ready_at:null, called_at:null});
+const reopen = id => upd(id, {status:"preparando", separando_at:null, ready_at:null, called_at:null, picked_at:null, canceled_at:null});
 function cancelOrder(id){ const o = byId(id); if (o && confirm("Cancelar pedido " + o.numero + "?")) upd(id, {status:"cancelado", canceled_at:new Date().toISOString()}); }
 
 function zapUrl(o){
   let t = String(o.telefone || "").replace(/\D/g, ""); if (!t) return "";
   if (!t.startsWith("55")) t = "55" + t;
-  const txt = encodeURIComponent("Olá" + (o.cliente ? ", " + o.cliente : "") + "! Seu pedido " + o.numero + " está pronto para retirada no Atacadão Pefisa. Consulte seu pedido: " + SITE + "consulta.html?pedido=" + encodeURIComponent(o.numero));
+  const txt = encodeURIComponent("Olá" + (o.cliente ? ", " + o.cliente : "") + "! Seu pedido " + o.numero + " está pronto para retirada no Atacadão Pefisa.");
   return `https://wa.me/${t}?text=${txt}`;
 }
 const zap = o => { const u = zapUrl(o); return u ? `<a class="btn ghost" style="text-decoration:none" target="_blank" rel="noopener" href="${u}">WhatsApp</a>` : ""; };
@@ -211,13 +211,16 @@ function vLogin(){
 }
 function vBalcao(){
   const prep = orders.filter(o => o.status === "preparando").sort((a,b) => a.createdAt - b.createdAt);
+  const sep = orders.filter(o => o.status === "separando").sort((a,b) => (a.sepAt || 0) - (b.sepAt || 0));
   const pr = orders.filter(o => o.status === "pronto").sort((a,b) => b.readyAt - a.readyAt);
-  const line = (o, ready) => `<div class="row">
+  const line = (o, m) => `<div class="row">
     <div class="num">${esc(o.numero)}</div>
-    <div class="info"><b>${esc(o.cliente) || "Sem nome"}</b><small>${o.cidade ? esc(o.cidade) + " · " : ""}${ready ? "Pronto às " + hora(o.readyAt) : "Entrou às " + hora(o.createdAt)}</small></div>
-    ${ready
+    <div class="info"><b>${esc(o.cliente) || "Sem nome"}</b><small>${o.cidade ? esc(o.cidade) + " · " : ""}${m === 2 ? "Pronto às " + hora(o.readyAt) : m === 1 ? "Separando desde " + hora(o.sepAt) : "Entrou às " + hora(o.createdAt)}</small></div>
+    ${m === 2
       ? `<button class="btn ghost" onclick="recall('${o.id}')">🔔 Chamar</button>${zap(o)}<button class="btn ok" onclick="finish('${o.id}')">Retirado</button><button class="btn ghost" onclick="back('${o.id}')">↩</button>`
-      : `<button class="btn ok" onclick="setReady('${o.id}')">Pronto ✓</button><button class="btn ghost" onclick="cancelOrder('${o.id}')">✕</button>`}
+      : m === 1
+      ? `<button class="btn ok" onclick="setReady('${o.id}')">Pronto ✓</button><button class="btn ghost" onclick="cancelOrder('${o.id}')">✕</button>`
+      : `<button class="btn" onclick="separar('${o.id}')">Separar ▶</button><button class="btn ghost" onclick="cancelOrder('${o.id}')">✕</button>`}
   </div>`;
   return `<div class="card"><h3>Importar nota do pedido (PDF)</h3>
     <input type="file" id="pdf" accept="application/pdf" onchange="lerPdf(this.files[0])">
@@ -229,37 +232,44 @@ function vBalcao(){
     <input id="ft" placeholder="WhatsApp com DDD (opcional)" inputmode="tel" autocomplete="off">
     <label style="display:flex;gap:8px;align-items:center;font-size:14px;margin:4px 0 10px"><input type="checkbox" style="width:auto;margin:0" ${autoZap ? "checked" : ""} onchange="autoZap=this.checked"> Abrir WhatsApp com a mensagem ao marcar “Pronto”</label>
     <button class="btn" style="width:100%" onclick="addOrder()">Adicionar à fila</button></div>
-  <div class="card"><h3>Em preparo (${prep.length})</h3>${prep.map(o => line(o,false)).join("") || '<div class="empty">Nenhum pedido em preparo.</div>'}</div>
-  <div class="card"><h3>Prontos para retirada (${pr.length})</h3>${pr.map(o => line(o,true)).join("") || '<div class="empty">Nenhum pedido pronto.</div>'}</div>`;
+  <div class="card"><h3>Pendentes (${prep.length})</h3>${prep.map(o => line(o,0)).join("") || '<div class="empty">Nenhum pedido pendente.</div>'}</div>
+  <div class="card"><h3>Separando (${sep.length})</h3>${sep.map(o => line(o,1)).join("") || '<div class="empty">Nenhum pedido sendo separado.</div>'}</div>
+  <div class="card"><h3>Prontos para retirada (${pr.length})</h3>${pr.map(o => line(o,2)).join("") || '<div class="empty">Nenhum pedido pronto.</div>'}</div>`;
 }
 function vTelao(){
   const prep = orders.filter(o => o.status === "preparando").sort((a,b) => a.createdAt - b.createdAt);
   const pr = orders.filter(o => o.status === "pronto").sort((a,b) => b.readyAt - a.readyAt);
   const now = Date.now();
+  const sep = orders.filter(o => o.status === "separando").sort((a,b) => (a.sepAt || 0) - (b.sepAt || 0));
   const chip = (o, f) => `<div class="chip ${f && flashIds[o.id] > now ? "flash" : ""}">${esc(o.numero)}${o.cliente ? "<small>" + esc(o.cliente) + (o.cidade ? " · " + esc(o.cidade) : "") + "</small>" : ""}</div>`;
   return `${soundOn ? "" : '<button class="btn" style="width:100%;margin-bottom:12px" onclick="enableSound()">🔊 Ativar som de alerta</button>'}
   <div class="tv">
-    <div class="col p"><h2>⏳ Em preparo</h2><div class="chips">${prep.map(o => chip(o,false)).join("") || '<span class="empty">—</span>'}</div></div>
+    <div class="col p"><h2>⏳ Pendente</h2><div class="chips">${prep.map(o => chip(o,false)).join("") || '<span class="empty">—</span>'}</div></div>
+    <div class="col s"><h2>📦 Separando</h2><div class="chips">${sep.map(o => chip(o,false)).join("") || '<span class="empty">—</span>'}</div></div>
     <div class="col r"><h2>✅ Pronto para retirada</h2><div class="chips">${pr.map(o => chip(o,true)).join("") || '<span class="empty">—</span>'}</div></div>
   </div>`;
 }
 function vConsulta(){
-  return `<div class="card"><h3>Consultar meu pedido</h3>
-    <input id="q" placeholder="Digite o nº do pedido" autocomplete="off" onkeydown="if(event.key==='Enter')consultar()">
+  return `<div class="card"><h3>Consultar pedido</h3>
+    <input id="q" placeholder="Nº do pedido ou telefone com DDD" autocomplete="off" onkeydown="if(event.key==='Enter')consultar()">
     <button class="btn" style="width:100%" onclick="consultar()">Consultar</button>
     <div id="res">${cRes || ""}</div></div>`;
 }
+function cCard(o){
+  const ola = o.cliente ? `Olá, <b>${esc(o.cliente)}</b>! ` : "", n = esc(o.numero);
+  const [cor, big, txt] = o.status === "pronto" ? ["var(--ok)", "✅ O seu pedido já pode ser retirado", `Pedido ${n}. É só ir ao balcão.`]
+    : o.status === "separando" ? ["var(--sep)", "📦 Separando", `Pedido ${n}. Estamos separando seus produtos.`]
+    : o.status === "preparando" ? ["var(--wait)", "⏳ Pendente", `Pedido ${n}. Está na fila para separação.`]
+    : o.status === "retirado" ? ["var(--mut)", "Já retirado", `Pedido ${n} foi retirado às ${hora(T(o.picked_at))}.`]
+    : ["var(--mut)", "Cancelado", `Pedido ${n} foi cancelado.`];
+  return `<div class="big" style="color:${cor}">${big}</div><div class="msg">${ola}${txt}</div>`;
+}
 async function consultar(){
   const q = $("#q").value.trim(); if (!q) return;
-  const {data, error} = await sb.rpc("consultar_pedido", {p_numero:q});
-  const o = data && data[0];
-  const ola = o && o.cliente ? `Olá, <b>${esc(o.cliente)}</b>! ` : "";
+  const {data, error} = await sb.rpc("consultar_pedido", {p_busca:q});
   cRes = error ? '<div class="msg">Erro ao consultar. Tente novamente.</div>'
-    : !o ? '<div class="msg">Pedido não encontrado. Confira o número ou fale com o balcão.</div>'
-    : o.status === "pronto" ? `<div class="big" style="color:var(--ok)">✅ Pronto!</div><div class="msg">${ola}Pedido ${esc(o.numero)} pode ser retirado no balcão.</div>`
-    : o.status === "retirado" ? `<div class="big">📦 Já retirado</div><div class="msg">${ola}Pedido ${esc(o.numero)} foi retirado às ${hora(T(o.picked_at))}.</div>`
-    : o.status === "cancelado" ? `<div class="big">Cancelado</div><div class="msg">${ola}Pedido ${esc(o.numero)} foi cancelado. Fale com o balcão.</div>`
-    : `<div class="big" style="color:var(--wait)">⏳ Em preparo</div><div class="msg">${ola}Pedido ${esc(o.numero)}. Avisaremos quando estiver pronto.</div>`;
+    : !data || !data.length ? '<div class="msg">Pedido não encontrado. Confira o número ou telefone.</div>'
+    : data.map(cCard).join("<hr>");
   $("#res").innerHTML = cRes;
 }
 
@@ -277,8 +287,8 @@ function histRows(L){
   return L.map(o => `<div class="row">
     <div class="num">${esc(o.numero)}</div>
     <div class="info"><b>${esc(o.cliente) || "Sem nome"}</b>
-      <small>${o.cidade ? esc(o.cidade) + " · " : ""}${dia(o.createdAt)} ${hora(o.createdAt)}${o.readyAt ? " · pronto " + hora(o.readyAt) + " (" + mins(o.createdAt, o.readyAt) + ")" : ""}${o.pickedAt ? " · retirado " + hora(o.pickedAt) : ""}${o.zapAt ? " · WhatsApp " + hora(o.zapAt) : ""}</small></div>
-    <span class="tag ${o.status === "pronto" || o.status === "retirado" ? "r" : "w"}">${STL[o.status]}</span>
+      <small>${o.cidade ? esc(o.cidade) + " · " : ""}${dia(o.createdAt)} ${hora(o.createdAt)}${o.sepAt ? " · separando " + hora(o.sepAt) : ""}${o.readyAt ? " · pronto " + hora(o.readyAt) + " (" + mins(o.createdAt, o.readyAt) + ")" : ""}${o.pickedAt ? " · retirado " + hora(o.pickedAt) : ""}${o.zapAt ? " · WhatsApp " + hora(o.zapAt) : ""}</small></div>
+    <span class="tag ${o.status === "pronto" || o.status === "retirado" ? "r" : o.status === "separando" ? "s" : "w"}">${STL[o.status]}</span>
     ${o.status === "retirado" || o.status === "cancelado" ? `<button class="btn ghost" onclick="reopen('${o.id}')">Reabrir</button>` : ""}
   </div>`).join("") || '<div class="empty">Nenhum pedido neste filtro.</div>';
 }
@@ -288,7 +298,7 @@ function vHistorico(){
   return `<div class="card"><h3>Histórico (últimos 30 dias)</h3>
     <input placeholder="Buscar por nº, nome, cidade ou telefone" value="${esc(hf.q)}" autocomplete="off" oninput="hf.q=this.value;$('#hl').innerHTML=histRows(histList())">
     <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px">${seg("per", [["hoje","Hoje"],["7d","7 dias"],["30d","30 dias"]])}</div>
-    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">${seg("st", [["todos","Todos"],["preparando","Preparo"],["pronto","Prontos"],["retirado","Retirados"],["cancelado","Cancelados"]])}</div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">${seg("st", [["todos","Todos"],["preparando","Pendentes"],["separando","Separando"],["pronto","Prontos"],["retirado","Retirados"],["cancelado","Cancelados"]])}</div>
     <div class="msg" style="text-align:left;margin-bottom:6px">${L.length} pedidos · ${cnt("retirado")} retirados · ${cnt("cancelado")} cancelados</div>
     <button class="btn ghost" onclick="exportCsv()">⬇ Exportar CSV</button></div>
     <div class="card" id="hl">${histRows(L)}</div>`;
