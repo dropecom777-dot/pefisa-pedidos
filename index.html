@@ -3,88 +3,342 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Consulta de Pedido – Atacadão Pefisa</title>
+<link rel="icon" href="data:image/png;base64,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">
+<title>Pedidos Prontos – Atacadão Pefisa</title>
 <style>
-:root{--bg:#f5f6f8;--card:#fff;--tx:#14181f;--mut:#667085;--bd:#e1e4ea;--pri:#0b5fff;--ok:#12805c;--okbg:#e2f6ee;--wait:#b25e09;--waitbg:#fff1dc;--sep:#1f5fd1;--sepbg:#e3ecff}
-@media (prefers-color-scheme:dark){:root{color-scheme:dark;--bg:#0f1218;--card:#1a1f29;--tx:#f1f3f7;--mut:#9aa3b2;--bd:#2b3240;--pri:#5b8cff;--ok:#4cd6a0;--okbg:#10382b;--wait:#ffb55c;--waitbg:#3b2a10;--sep:#8fb0ff;--sepbg:#16264a}}
+:root{color-scheme:light;--bg:#f5f6f8;--card:#fff;--tx:#14181f;--mut:#667085;--bd:#e1e4ea;--pri:#262e77;--ok:#12805c;--okbg:#e2f6ee;--wait:#b25e09;--waitbg:#fff1dc;--danger:#c0362c;--sep:#1f5fd1;--sepbg:#e3ecff}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;min-height:100vh}
-header{padding:14px;text-align:center;background:var(--card);border-bottom:4px solid var(--pri);font-weight:800;font-size:18px}
-header img{height:52px;max-width:90%;object-fit:contain}
-main{max-width:480px;margin:0 auto;padding:18px 14px}
-.card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:18px}
-h1{font-size:18px;margin:0 0 12px}
-input{width:100%;padding:14px;border:1px solid var(--bd);border-radius:12px;background:var(--bg);color:var(--tx);font-size:18px;text-align:center;margin-bottom:10px}
-button{width:100%;border:0;border-radius:12px;padding:14px;font-size:17px;font-weight:700;cursor:pointer;background:var(--pri);color:#fff}
-.res{margin-top:16px;border-radius:14px;padding:18px;text-align:center}
-.res .big{font-size:clamp(24px,7.5vw,34px);font-weight:800;line-height:1.15}
-.res p{margin:8px 0 0;color:var(--mut)}
-.res.ok{background:var(--okbg)}.res.ok .big{color:var(--ok)}
-.res.wait{background:var(--waitbg)}.res.wait .big{color:var(--wait)}
-.res.sep{background:var(--sepbg)}.res.sep .big{color:var(--sep)}
-.res.neutral{background:var(--bg);border:1px solid var(--bd)}
-.steps{display:flex;gap:6px;margin-top:14px}
-.steps span{flex:1;font-size:12px;font-weight:700;padding:6px 4px;border-radius:999px;background:var(--card);color:var(--mut)}
-.steps span.on{background:var(--pri);color:#fff}
-small{display:block;text-align:center;color:var(--mut);margin-top:14px}
+header{display:flex;align-items:center;gap:8px;padding:12px 14px;background:var(--card);border-bottom:5px solid;border-image:linear-gradient(90deg,#e4111c,#262e77,#08abe6) 1;position:sticky;top:0;z-index:5;flex-wrap:wrap}
+header b{font-size:16px;white-space:nowrap}
+.brand{flex:1;display:flex;align-items:center;gap:10px;min-width:170px}.brand img{height:54px;width:54px;border-radius:50%;flex:none}.brand b{font-size:18px;color:var(--pri)}
+nav{display:flex;gap:6px;flex-wrap:wrap}
+nav button{border:1px solid var(--bd);background:var(--bg);color:var(--tx);padding:8px 12px;border-radius:999px;font-size:14px;cursor:pointer}
+nav button.on{background:var(--pri);color:#fff;border-color:var(--pri)}
+main{padding:14px;max-width:960px;margin:0 auto}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:14px;margin-bottom:12px}
+input{width:100%;padding:12px;border:1px solid var(--bd);border-radius:10px;background:var(--bg);color:var(--tx);font-size:16px;margin-bottom:8px}
+.btn{border:0;border-radius:10px;padding:11px 14px;font-size:15px;font-weight:600;cursor:pointer;background:var(--pri);color:#fff}
+.btn.ok{background:var(--ok)}.btn.ghost{background:var(--bg);color:var(--tx);border:1px solid var(--bd)}
+.row{display:flex;align-items:center;gap:8px;padding:10px 0;border-top:1px solid var(--bd);flex-wrap:wrap}
+.row:first-child{border-top:0}
+.num{font-size:14px;font-weight:700;min-width:56px;color:var(--mut)}
+.info{flex:1;min-width:120px}.info b{font-size:20px;line-height:1.2;display:block}.info .cid{display:block;font-size:16px;font-weight:600}.info small{color:var(--mut);display:block;margin-top:2px}
+.tag{font-size:12px;font-weight:700;padding:3px 9px;border-radius:999px}
+.tag.s{background:var(--sepbg);color:var(--sep)}.tag.w{background:var(--waitbg);color:var(--wait)}.tag.r{background:var(--okbg);color:var(--ok)}
+h3{margin:4px 0 10px;font-size:15px;color:var(--mut)}
+.tv{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;height:calc(100vh - 28px)}
+body.tvmode header{display:none}
+main.full{max-width:none;padding:14px}
+.tvbar{position:fixed;right:10px;bottom:10px;display:flex;gap:6px;z-index:9;opacity:.4}.tvbar:hover{opacity:1}
+@media(max-width:820px){.tv{grid-template-columns:1fr;height:auto}.tv .col{min-height:180px}}
+.tv .col{border-radius:16px;padding:16px;overflow:auto}
+.tv .col.s{background:var(--sepbg)}.tv .col.p{background:var(--waitbg)}.tv .col.r{background:var(--okbg)}
+.tv h2{margin:0 0 14px;font-size:clamp(20px,2vw,34px)}
+.tv .col.s h2{color:var(--sep)}.tv .col.p h2{color:var(--wait)}.tv .col.r h2{color:var(--ok)}
+.chips{display:flex;flex-direction:column;gap:10px}
+.chip{background:var(--card);border-radius:14px;padding:12px 16px;text-align:left;line-height:1.15}
+.chip .cn{display:block;font-size:clamp(14px,1.2vw,22px);font-weight:700;color:var(--mut)}
+.chip .nm{display:block;font-size:clamp(22px,2.4vw,46px);font-weight:800;margin-top:2px}
+.chip .ct{display:block;font-size:clamp(16px,1.7vw,30px);font-weight:600;margin-top:3px}
+.col.r .chip .nm{color:var(--ok)}
+.flash{animation:fl 1s ease-in-out 8}
+.flash .cn,.flash .nm,.flash .ct{animation:flt 1s ease-in-out 8}
+@keyframes fl{50%{background:var(--ok)}}
+@keyframes flt{50%{color:#fff}}
+.big{font-size:clamp(26px,7vw,44px);font-weight:800;text-align:center;margin:16px 0 4px}
+.msg{text-align:center;color:var(--mut)}
+.empty{color:var(--mut);font-size:14px;padding:8px 0}
+.err{color:var(--danger);font-size:14px;margin:4px 0 8px}
 </style>
 </head>
 <body>
-<header><img id="logo" src="logo.png" alt="Atacadão Pefisa" onerror="this.style.display='none';document.getElementById('brandtx').style.display='inline'"><b id="brandtx" style="display:none">🛒 Atacadão Pefisa</b></header>
-<main>
-  <div class="card">
-    <h1>Consulte seu pedido</h1>
-    <input id="q" placeholder="Nº do pedido ou telefone com DDD" autocomplete="off">
-    <button id="go">Consultar</button>
-    <div id="res"></div>
-  </div>
-  <small>A tela atualiza sozinha enquanto o pedido não estiver pronto.</small>
-</main>
+<header>
+  <div class="brand"><img class="lg" alt="Logo Atacadão Pefisa"><b>Atacadão Pefisa</b></div>
+  <nav id="nav"></nav>
+</header>
+<main id="app"></main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.0/dist/umd/supabase.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>
-const sb = supabase.createClient("https://fgdqkflpirqrelhixpvn.supabase.co", "sb_publishable_jO5dg7oBFxvup4SJUbaIAQ_PFNDFBlS");
+document.querySelectorAll("img.lg").forEach(i => i.src = document.querySelector('link[rel=icon]').href);
+const SB_URL = "https://fgdqkflpirqrelhixpvn.supabase.co";
+const SB_KEY = "sb_publishable_jO5dg7oBFxvup4SJUbaIAQ_PFNDFBlS";
+const sb = supabase.createClient(SB_URL, SB_KEY);
+
+let session = null, orders = [], chan = null, soundOn = false, actx = null, autoZap = true, loginErr = "", cRes = null;
+let view = location.hash === "#consulta" ? "consulta" : "balcao";
+let pdfMsg = "", pdfTxt = "";
+let hf = {q:"", st:"todos", per:"hoje"}, lastCall = {}, flashIds = {};
+const STL = {preparando:"Pendente", separando:"Separando", pronto:"Pronto", retirado:"Retirado", cancelado:"Cancelado"};
+
 const $ = s => document.querySelector(s);
 const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-const hora = v => v ? new Date(v).toLocaleTimeString("pt-BR", {hour:"2-digit", minute:"2-digit"}) : "";
-let timer = null;
+const T = v => v ? new Date(v).getTime() : null;
+const hora = t => t ? new Date(t).toLocaleTimeString("pt-BR", {hour:"2-digit", minute:"2-digit"}) : "";
+const dia = t => t ? new Date(t).toLocaleDateString("pt-BR") : "";
+const norm = r => ({id:r.id, numero:r.numero, cliente:r.cliente, cidade:r.cidade, telefone:r.telefone, status:r.status,
+  createdAt:T(r.created_at), sepAt:T(r.separando_at), readyAt:T(r.ready_at), calledAt:T(r.called_at), pickedAt:T(r.picked_at), zapAt:T(r.zap_at)});
 
-const msg = (cls, big, txt) => `<div class="res ${cls}"><div class="big">${big}</div>${txt ? `<p>${txt}</p>` : ""}</div>`;
+/* ---------- dados ---------- */
+async function load(){
+  const since = new Date(Date.now() - 30*864e5).toISOString();
+  const {data, error} = await sb.from("pedidos").select("*").gte("created_at", since).order("created_at", {ascending:false}).limit(2000);
+  if (error) return;
+  orders = data.map(norm);
+  data.forEach(r => { if (r.called_at && lastCall[r.id] === undefined) lastCall[r.id] = T(r.called_at); });
+  render();
+}
+function subscribe(){
+  if (chan) return;
+  chan = sb.channel("pedidos").on("postgres_changes", {event:"*", schema:"public", table:"pedidos"}, p => {
+    if (p.eventType === "DELETE") orders = orders.filter(o => o.id !== p.old.id);
+    else {
+      const o = norm(p.new), i = orders.findIndex(x => x.id === o.id);
+      if (i >= 0) orders[i] = o; else orders.unshift(o);
+      if (o.status === "pronto" && o.calledAt && lastCall[o.id] !== o.calledAt) {
+        lastCall[o.id] = o.calledAt; flashIds[o.id] = Date.now() + 8000; if (view === "telao") beep();
+      }
+    }
+    render();
+  }).subscribe();
+}
+async function upd(id, patch){
+  const {error} = await sb.from("pedidos").update(patch).eq("id", id);
+  if (error) alert("Não foi possível salvar: " + error.message);
+}
+const byId = id => orders.find(x => x.id === id);
 
-function card(o){
-  const ola = o.cliente ? `Olá, <b>${esc(o.cliente)}</b>! ` : "", n = esc(o.numero);
-  const step = {preparando:0, separando:1, pronto:2}[o.status];
-  const steps = step === undefined ? "" : `<div class="steps">${["Pendente","Separando","Pronto"].map((t, i) => `<span class="${i <= step ? "on" : ""}">${t}</span>`).join("")}</div>`;
-  const wrap = (cls, big, txt) => `<div class="res ${cls}"><div class="big">${big}</div><p>${txt}</p>${steps}</div>`;
-  if (o.status === "pronto") return wrap("ok", "✅ O seu pedido já pode ser retirado", `${ola}Pedido ${n}. É só ir ao balcão.`);
-  if (o.status === "separando") return wrap("sep", "📦 Separando", `${ola}Pedido ${n}. Estamos separando seus produtos.`);
-  if (o.status === "preparando") return wrap("wait", "⏳ Pendente", `${ola}Pedido ${n}. Seu pedido está na fila para separação.`);
-  if (o.status === "retirado") return wrap("neutral", "Já retirado", `${ola}Pedido ${n} foi retirado às ${hora(o.picked_at)}.`);
-  return wrap("neutral", "Cancelado", `${ola}Pedido ${n} foi cancelado. Fale com o balcão.`);
+/* ---------- importar nota (PDF) ---------- */
+function titulo(v){
+  v = (v || "").trim(); if (!v || v !== v.toUpperCase()) return v;
+  return v.toLowerCase().replace(/(^|\s)(\S)/g, (m, a, b) => a + b.toUpperCase()).replace(/\s(De|Da|Do|Das|Dos|E)\s/g, x => x.toLowerCase());
+}
+function extrairNota(t){
+  const pick = rs => { for (const r of rs) { const m = t.match(r); if (m && m[1]) return m[1].trim(); } return ""; };
+  const fim = "(?=\\s+(?:cpf|cnpj|cidade|munic[íi]pio|fone|telefone|tel|celular|whats|endere[çc]o|bairro|cep|ie|rg|uf|data|vendedor)\\b|\\n|$)";
+  const numero = pick([/(?:pedido|or[çc]amento|venda)\s*(?:n[ºo°.]*)?\s*[:#-]?\s*(\d{1,10})/i, /\bn[ºo°.]\s*[:#-]?\s*(\d{3,10})/i]);
+  const cliente = pick([new RegExp("(?:cliente|nome(?:\\s+do\\s+cliente)?|raz[ãa]o\\s+social|destinat[áa]rio)\\s*[:\\-]\\s*([^\\n]+?)" + fim, "i")]);
+  const cidade = pick([/(?:cidade|munic[íi]pio)\s*[:\-]\s*([^\n/]+?)(?=\s*(?:\/|\s-\s|\s+(?:uf|cep|bairro|fone|telefone|estado|cliente)\b|\n|$))/i]);
+  const sec = t.slice(Math.max(0, t.search(/cliente/i)));
+  const tel = (() => { for (const r of [/(?:celular|whats(?:app)?|telefone|fone|tel)\s*[:\-]?\s*(\(?\d{2}\)?\s*9\d{4}[-\s]?\d{4})/i, /(\(?\d{2}\)?\s*9\d{4}[-\s]?\d{4})/, /(?:telefone|fone|tel)\s*[:\-]?\s*(\(?\d{2}\)?\s*\d{4}[-\s]?\d{4})/i]) { const m = sec.match(r); if (m && m[1]) return m[1].trim(); } return ""; })();
+  return {numero, cliente: titulo(cliente), cidade: titulo(cidade), telefone: tel};
+}
+function pdfBox(){
+  return pdfMsg + (pdfTxt ? `<details style="margin-top:8px"><summary style="cursor:pointer;color:var(--mut);font-size:13px">Ver texto lido do PDF</summary><pre style="white-space:pre-wrap;font-size:12px;max-height:200px;overflow:auto">${esc(pdfTxt)}</pre></details>` : "");
+}
+async function lerPdf(file){
+  if (!file) return;
+  const show = m => { pdfMsg = `<div class="msg" style="text-align:left">${m}</div>`; const e = $("#pdfmsg"); if (e) e.innerHTML = pdfBox(); };
+  pdfTxt = ""; show("Lendo a nota…");
+  try {
+    pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+    const doc = await pdfjsLib.getDocument({data: await file.arrayBuffer()}).promise;
+    const linhas = [];
+    for (let n = 1; n <= doc.numPages; n++) {
+      const tc = await (await doc.getPage(n)).getTextContent(), rows = {};
+      tc.items.forEach(it => { const y = Math.round(it.transform[5] / 3); (rows[y] = rows[y] || []).push(it); });
+      Object.keys(rows).map(Number).sort((a,b) => b - a).forEach(y =>
+        linhas.push(rows[y].sort((a,b) => a.transform[4] - b.transform[4]).map(i => i.str).join(" ").replace(/\s+/g, " ").trim()));
+    }
+    pdfTxt = linhas.filter(Boolean).join("\n");
+    if (pdfTxt.length < 20) { pdfTxt = ""; show("Não encontrei texto neste PDF (parece uma imagem escaneada). Preencha os dados manualmente."); return; }
+    const d = extrairNota(pdfTxt), map = {fn:d.numero, fc:d.cliente, fd:d.cidade, ft:d.telefone};
+    Object.entries(map).forEach(([id, v]) => { if (v && $("#"+id)) $("#"+id).value = v; });
+    const falt = [["Nº do pedido", d.numero], ["Nome", d.cliente], ["Cidade", d.cidade], ["Telefone", d.telefone]].filter(x => !x[1]).map(x => x[0]);
+    show("✅ Dados preenchidos abaixo. Confira e toque em <b>Adicionar à fila</b>." + (falt.length ? "<br>Não encontrei: " + falt.join(", ") + "." : ""));
+  } catch (e) { show("Não consegui ler este PDF. Preencha manualmente."); }
 }
 
-async function consultar(silencioso){
-  const q = $("#q").value.trim();
-  if (!q) { $("#res").innerHTML = ""; return; }
-  if (!silencioso) $("#res").innerHTML = msg("neutral", "…", "Consultando");
-  const {data, error} = await sb.rpc("consultar_pedido", {p_busca:q});
-  clearTimeout(timer);
-  if (error) { $("#res").innerHTML = msg("neutral", "Ops", "Não foi possível consultar agora. Tente novamente."); return; }
-  if (!data || !data.length) {
-    const tel = q.replace(/\D/g, "").length >= 10;
-    $("#res").innerHTML = msg("neutral", "Não encontrado", tel ? "Nenhum pedido recente com esse telefone. Confira o número com DDD ou fale com o balcão." : "Confira o número do pedido ou fale com o balcão.");
+async function addOrder(){
+  const n = $("#fn").value.trim(), nome = $("#fc").value.trim(), cid = $("#fd").value.trim(), tel = $("#ft").value.trim();
+  if (!n) { $("#fn").focus(); return; }
+  const {error} = await sb.from("pedidos").insert({numero:n, cliente:nome || null, cidade:cid || null, telefone:tel || null});
+  if (error) {
+    alert(error.code === "23505" ? "Já existe um pedido ativo com o número " + n + "." :
+          error.code === "42501" ? "Seu e-mail não está autorizado a cadastrar pedidos." : "Erro: " + error.message);
     return;
   }
-  $("#res").innerHTML = data.map(card).join("");
-  if (data.some(o => o.status === "preparando" || o.status === "separando")) timer = setTimeout(() => consultar(true), 15000);
+  ["#fn","#fc","#fd","#ft"].forEach(s => $(s).value = ""); $("#fn").focus();
+}
+function setReady(id){
+  const o = byId(id); if (!o) return;
+  const z = autoZap && o.telefone ? zapUrl(o) : "";
+  if (z) window.open(z, "_blank", "noopener");
+  const now = new Date().toISOString();
+  upd(id, {status:"pronto", ready_at:now, called_at:now, zap_at: z ? now : (o.zapAt ? new Date(o.zapAt).toISOString() : null)});
+}
+const recall = id => upd(id, {called_at:new Date().toISOString()});
+const finish = id => upd(id, {status:"retirado", picked_at:new Date().toISOString()});
+const separar = id => upd(id, {status:"separando", separando_at:new Date().toISOString()});
+const back = id => upd(id, {status:"separando", ready_at:null, called_at:null});
+const reopen = id => upd(id, {status:"preparando", separando_at:null, ready_at:null, called_at:null, picked_at:null, canceled_at:null});
+function cancelOrder(id){ const o = byId(id); if (o && confirm("Cancelar pedido " + o.numero + "?")) upd(id, {status:"cancelado", canceled_at:new Date().toISOString()}); }
+
+function zapUrl(o){
+  let t = String(o.telefone || "").replace(/\D/g, ""); if (!t) return "";
+  if (!t.startsWith("55")) t = "55" + t;
+  const txt = encodeURIComponent("Olá" + (o.cliente ? ", " + o.cliente : "") + "! Seu pedido " + o.numero + " está pronto para retirada no Atacadão Pefisa.");
+  return `https://wa.me/${t}?text=${txt}`;
+}
+const zap = o => { const u = zapUrl(o); return u ? `<a class="btn ghost" style="text-decoration:none" target="_blank" rel="noopener" href="${u}">WhatsApp</a>` : ""; };
+
+function beep(){
+  if (!soundOn || !actx) return;
+  [880, 1175, 880].forEach((f, i) => {
+    const o = actx.createOscillator(), g = actx.createGain();
+    o.frequency.value = f; o.connect(g); g.connect(actx.destination);
+    const t = actx.currentTime + i * 0.28;
+    g.gain.setValueAtTime(0.25, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.25);
+    o.start(t); o.stop(t + 0.26);
+  });
+}
+function toggleFs(){ try { document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen(); } catch (e) {} }
+function enableSound(){ try { actx = actx || new (window.AudioContext || window.webkitAudioContext)(); actx.resume(); soundOn = true; beep(); } catch (e) {} render(); }
+
+/* ---------- login ---------- */
+async function login(){
+  loginErr = "";
+  const {error} = await sb.auth.signInWithPassword({email:$("#em").value.trim(), password:$("#pw").value});
+  if (error) { loginErr = "E-mail ou senha incorretos."; render(); }
+}
+const logout = () => sb.auth.signOut();
+sb.auth.onAuthStateChange((ev, s) => {
+  session = s;
+  if (s) { load(); subscribe(); }
+  else { orders = []; if (chan) { sb.removeChannel(chan); chan = null; } }
+  render();
+});
+
+/* ---------- telas ---------- */
+function vLogin(){
+  return `<div class="card"><h3>Acesso da equipe</h3>
+    <input id="em" type="email" placeholder="E-mail" autocomplete="username">
+    <input id="pw" type="password" placeholder="Senha" autocomplete="current-password" onkeydown="if(event.key==='Enter')login()">
+    ${loginErr ? `<div class="err">${loginErr}</div>` : ""}
+    <button class="btn" style="width:100%" onclick="login()">Entrar</button></div>`;
+}
+function vBalcao(){
+  const prep = orders.filter(o => o.status === "preparando").sort((a,b) => a.createdAt - b.createdAt);
+  const sep = orders.filter(o => o.status === "separando").sort((a,b) => (a.sepAt || 0) - (b.sepAt || 0));
+  const pr = orders.filter(o => o.status === "pronto").sort((a,b) => b.readyAt - a.readyAt);
+  const line = (o, m) => `<div class="row">
+    <div class="num">Nº ${esc(o.numero)}</div>
+    <div class="info"><b>${esc(o.cliente) || "Sem nome"}</b>${o.cidade ? `<span class="cid">${esc(o.cidade)}</span>` : ""}<small>${m === 2 ? "Pronto às " + hora(o.readyAt) : m === 1 ? "Separando desde " + hora(o.sepAt) : "Entrou às " + hora(o.createdAt)}</small></div>
+    ${m === 2
+      ? `<button class="btn ghost" onclick="recall('${o.id}')">🔔 Chamar</button>${zap(o)}<button class="btn ok" onclick="finish('${o.id}')">Retirado</button><button class="btn ghost" onclick="back('${o.id}')">↩</button>`
+      : m === 1
+      ? `<button class="btn ok" onclick="setReady('${o.id}')">Pronto ✓</button><button class="btn ghost" onclick="cancelOrder('${o.id}')">✕</button>`
+      : `<button class="btn" onclick="separar('${o.id}')">Separar ▶</button><button class="btn ghost" onclick="cancelOrder('${o.id}')">✕</button>`}
+  </div>`;
+  return `<div class="card"><h3>Importar nota do pedido (PDF)</h3>
+    <input type="file" id="pdf" accept="application/pdf" onchange="lerPdf(this.files[0])">
+    <div id="pdfmsg">${pdfBox()}</div></div>
+  <div class="card"><h3>Novo pedido</h3>
+    <input id="fn" placeholder="Nº do pedido" autocomplete="off">
+    <input id="fc" placeholder="Nome completo do cliente (com sobrenome)" autocomplete="off">
+    <input id="fd" placeholder="Cidade" autocomplete="off">
+    <input id="ft" placeholder="WhatsApp com DDD (opcional)" inputmode="tel" autocomplete="off">
+    <label style="display:flex;gap:8px;align-items:center;font-size:14px;margin:4px 0 10px"><input type="checkbox" style="width:auto;margin:0" ${autoZap ? "checked" : ""} onchange="autoZap=this.checked"> Abrir WhatsApp com a mensagem ao marcar “Pronto”</label>
+    <button class="btn" style="width:100%" onclick="addOrder()">Adicionar à fila</button></div>
+  <div class="card"><h3>Pendentes (${prep.length})</h3>${prep.map(o => line(o,0)).join("") || '<div class="empty">Nenhum pedido pendente.</div>'}</div>
+  <div class="card"><h3>Separando (${sep.length})</h3>${sep.map(o => line(o,1)).join("") || '<div class="empty">Nenhum pedido sendo separado.</div>'}</div>
+  <div class="card"><h3>Prontos para retirada (${pr.length})</h3>${pr.map(o => line(o,2)).join("") || '<div class="empty">Nenhum pedido pronto.</div>'}</div>`;
+}
+function vTelao(){
+  const prep = orders.filter(o => o.status === "preparando").sort((a,b) => a.createdAt - b.createdAt);
+  const pr = orders.filter(o => o.status === "pronto").sort((a,b) => b.readyAt - a.readyAt);
+  const now = Date.now();
+  const sep = orders.filter(o => o.status === "separando").sort((a,b) => (a.sepAt || 0) - (b.sepAt || 0));
+  const chip = (o, f) => `<div class="chip ${f && flashIds[o.id] > now ? "flash" : ""}"><span class="cn">Nº ${esc(o.numero)}</span><b class="nm">${esc(o.cliente) || "Sem nome"}</b>${o.cidade ? `<span class="ct">${esc(o.cidade)}</span>` : ""}</div>`;
+  return `<div class="tvbar">${soundOn ? "" : '<button class="btn" onclick="enableSound()">🔊 Ativar som</button>'}<button class="btn ghost" onclick="toggleFs()">⛶ Tela cheia</button><button class="btn ghost" onclick="view='balcao';render()">✕ Sair</button></div>
+  <div class="tv">
+    <div class="col p"><h2>⏳ Pendente</h2><div class="chips">${prep.map(o => chip(o,false)).join("") || '<span class="empty">—</span>'}</div></div>
+    <div class="col s"><h2>📦 Separando</h2><div class="chips">${sep.map(o => chip(o,false)).join("") || '<span class="empty">—</span>'}</div></div>
+    <div class="col r"><h2>✅ Pronto para retirada</h2><div class="chips">${pr.map(o => chip(o,true)).join("") || '<span class="empty">—</span>'}</div></div>
+  </div>`;
+}
+function vConsulta(){
+  return `<div class="card"><h3>Consultar pedido</h3>
+    <input id="q" placeholder="Nº do pedido ou telefone com DDD" autocomplete="off" onkeydown="if(event.key==='Enter')consultar()">
+    <button class="btn" style="width:100%" onclick="consultar()">Consultar</button>
+    <div id="res">${cRes || ""}</div></div>`;
+}
+function cCard(o){
+  const ola = o.cliente ? `Olá, <b>${esc(o.cliente)}</b>! ` : "", n = esc(o.numero);
+  const [cor, big, txt] = o.status === "pronto" ? ["var(--ok)", "✅ O seu pedido já pode ser retirado", `Pedido ${n}. É só ir ao balcão.`]
+    : o.status === "separando" ? ["var(--sep)", "📦 Separando", `Pedido ${n}. Estamos separando seus produtos.`]
+    : o.status === "preparando" ? ["var(--wait)", "⏳ Pendente", `Pedido ${n}. Está na fila para separação.`]
+    : o.status === "retirado" ? ["var(--mut)", "Já retirado", `Pedido ${n} foi retirado às ${hora(T(o.picked_at))}.`]
+    : ["var(--mut)", "Cancelado", `Pedido ${n} foi cancelado.`];
+  return `<div class="big" style="color:${cor}">${big}</div><div class="msg">${ola}${txt}</div>`;
+}
+async function consultar(){
+  const q = $("#q").value.trim(); if (!q) return;
+  const {data, error} = await sb.rpc("consultar_pedido", {p_busca:q});
+  cRes = error ? '<div class="msg">Erro ao consultar. Tente novamente.</div>'
+    : !data || !data.length ? '<div class="msg">Pedido não encontrado. Confira o número ou telefone.</div>'
+    : data.map(cCard).join("<hr>");
+  $("#res").innerHTML = cRes;
 }
 
-$("#go").onclick = () => consultar(false);
-$("#q").addEventListener("keydown", e => { if (e.key === "Enter") consultar(false); });
+function histList(){
+  const n = new Date(), d0 = new Date(n.getFullYear(), n.getMonth(), n.getDate()).getTime();
+  const lim = hf.per === "hoje" ? d0 : hf.per === "7d" ? d0 - 6*864e5 : d0 - 29*864e5;
+  const q = hf.q.toLowerCase();
+  return orders.filter(o => o.createdAt >= lim && (hf.st === "todos" || o.status === hf.st) &&
+    (!q || [o.numero, o.cliente, o.cidade, o.telefone].some(v => String(v || "").toLowerCase().includes(q))))
+    .sort((a,b) => b.createdAt - a.createdAt);
+}
+const setHf = (k, v) => { hf[k] = v; render(); };
+const mins = (a, b) => a && b ? Math.round((b - a) / 60000) + " min" : "—";
+function histRows(L){
+  return L.map(o => `<div class="row">
+    <div class="num">Nº ${esc(o.numero)}</div>
+    <div class="info"><b>${esc(o.cliente) || "Sem nome"}</b>${o.cidade ? `<span class="cid">${esc(o.cidade)}</span>` : ""}
+      <small>${dia(o.createdAt)} ${hora(o.createdAt)}${o.sepAt ? " · separando " + hora(o.sepAt) : ""}${o.readyAt ? " · pronto " + hora(o.readyAt) + " (" + mins(o.createdAt, o.readyAt) + ")" : ""}${o.pickedAt ? " · retirado " + hora(o.pickedAt) : ""}${o.zapAt ? " · WhatsApp " + hora(o.zapAt) : ""}</small></div>
+    <span class="tag ${o.status === "pronto" || o.status === "retirado" ? "r" : o.status === "separando" ? "s" : "w"}">${STL[o.status]}</span>
+    ${o.status === "retirado" || o.status === "cancelado" ? `<button class="btn ghost" onclick="reopen('${o.id}')">Reabrir</button>` : ""}
+  </div>`).join("") || '<div class="empty">Nenhum pedido neste filtro.</div>';
+}
+function vHistorico(){
+  const L = histList(), cnt = s => L.filter(o => o.status === s).length;
+  const seg = (k, opts) => opts.map(([v, t]) => `<button class="btn ${hf[k] === v ? "" : "ghost"}" style="padding:8px 12px;font-size:14px" onclick="setHf('${k}','${v}')">${t}</button>`).join(" ");
+  return `<div class="card"><h3>Histórico (últimos 30 dias)</h3>
+    <input placeholder="Buscar por nº, nome, cidade ou telefone" value="${esc(hf.q)}" autocomplete="off" oninput="hf.q=this.value;$('#hl').innerHTML=histRows(histList())">
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px">${seg("per", [["hoje","Hoje"],["7d","7 dias"],["30d","30 dias"]])}</div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">${seg("st", [["todos","Todos"],["preparando","Pendentes"],["separando","Separando"],["pronto","Prontos"],["retirado","Retirados"],["cancelado","Cancelados"]])}</div>
+    <div class="msg" style="text-align:left;margin-bottom:6px">${L.length} pedidos · ${cnt("retirado")} retirados · ${cnt("cancelado")} cancelados</div>
+    <button class="btn ghost" onclick="exportCsv()">⬇ Exportar CSV</button></div>
+    <div class="card" id="hl">${histRows(L)}</div>`;
+}
+function exportCsv(){
+  const c = v => '"' + String(v == null ? "" : v).replace(/"/g, '""') + '"';
+  const f = t => t ? new Date(t).toLocaleString("pt-BR") : "";
+  const rows = [["Pedido","Cliente","Cidade","Telefone","Status","Entrada","Pronto","Retirado","WhatsApp"]].concat(
+    histList().map(o => [o.numero, o.cliente, o.cidade, o.telefone, STL[o.status], f(o.createdAt), f(o.readyAt), f(o.pickedAt), f(o.zapAt)]));
+  const blob = new Blob(["\uFEFF" + rows.map(r => r.map(c).join(";")).join("\n")], {type:"text/csv;charset=utf-8"});
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "historico-pedidos-pefisa.csv"; a.click();
+}
 
-/* abre direto com ?pedido=123 ou #123 */
-const pre = new URLSearchParams(location.search).get("pedido") || location.hash.replace("#", "");
-if (pre) { $("#q").value = decodeURIComponent(pre); consultar(false); }
+function render(){
+  const tabs = session ? [["balcao","Balcão"],["telao","Telão"],["consulta","Consulta"],["historico","Histórico"]] : [["balcao","Equipe"],["consulta","Consulta"]];
+  $("#nav").innerHTML = tabs.map(([v,t]) => `<button class="${view === v ? "on" : ""}" onclick="view='${v}';render()">${t}</button>`).join("") +
+    (session ? '<button onclick="logout()">Sair</button>' : "");
+  if (!session && view !== "consulta") view = "balcao";
+  const tv = view === "telao" && !!session; document.body.classList.toggle("tvmode", tv); $("#app").className = tv ? "full" : "";
+  const keep = ["fn","fc","fd","ft","q"].map(i => $("#"+i) ? $("#"+i).value : null);
+  const active = document.activeElement && document.activeElement.id;
+  $("#app").innerHTML = view === "consulta" ? vConsulta() : !session ? vLogin() :
+    view === "balcao" ? vBalcao() : view === "telao" ? vTelao() : vHistorico();
+  ["fn","fc","fd","ft","q"].forEach((i, k) => { if (keep[k] && $("#"+i)) $("#"+i).value = keep[k]; });
+  if (active && $("#"+active)) $("#"+active).focus();
+}
+document.addEventListener("keydown", e => { if (e.key === "Enter" && /^f[ncdt]$/.test(e.target.id || "")) addOrder(); });
+setInterval(() => { if (session) { if (view === "telao") render(); } }, 4000);
+setInterval(() => { if (session) load(); }, 60000);
+render();
 </script>
 </body>
 </html>
