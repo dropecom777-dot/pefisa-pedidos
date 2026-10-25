@@ -24,7 +24,7 @@ input{width:100%;padding:12px;border:1px solid var(--bd);border-radius:8px;backg
 input:focus{outline:2px solid var(--pri);outline-offset:-1px;background:#fff}
 .btn{border:0;border-radius:8px;padding:10px 15px;font-weight:600;font-size:14.5px;font-family:inherit;cursor:pointer;background:var(--pri);color:#fff;box-shadow:0 1px 2px rgba(20,30,70,.2);transition:filter .15s}
 .btn:hover{filter:brightness(1.15)}
-.btn.ok{background:var(--ok)}.btn.sepb{background:var(--sep)}
+.btn.ok{background:var(--ok)}.btn.sepb{background:#f2b705;color:#2b2200}.btn.fin{background:#1f62c9}
 .btn.ghost{background:var(--card);color:var(--pri);border:1px solid var(--bd);box-shadow:none}.btn.ghost:hover{background:var(--field);filter:none}
 .btn.ghost.danger{color:var(--danger);border-color:#e0b4b0}
 .row{display:flex;align-items:center;gap:8px;padding:12px 0;border-top:1px solid var(--bd);flex-wrap:wrap}
@@ -234,9 +234,9 @@ function vBalcao(){
     <div class="num">Nº ${esc(o.numero)}</div>
     <div class="info"><b>${esc(o.cliente) || "Sem nome"}</b>${o.cidade ? `<span class="cid">${esc(o.cidade)}</span>` : ""}<small>${m === 2 ? "Pronto às " + hora(o.readyAt) : m === 1 ? "Separando desde " + hora(o.sepAt) : "Entrou às " + hora(o.createdAt)}</small></div>
     ${m === 2
-      ? `<button class="btn ghost" onclick="recall('${o.id}')">🔔 Chamar</button>${zap(o)}<button class="btn ok" onclick="finish('${o.id}')">Retirado</button><button class="btn ghost" onclick="back('${o.id}')">↩</button>`
+      ? `<button class="btn ghost" onclick="recall('${o.id}')">🔔 Chamar</button>${zap(o)}<button class="btn ok" onclick="finish('${o.id}')">Retirar</button><button class="btn ghost" onclick="back('${o.id}')">↩</button>`
       : m === 1
-      ? `<button class="btn ok" onclick="setReady('${o.id}')">Pronto ✓</button><button class="btn ghost danger" onclick="cancelOrder('${o.id}')">✕</button>`
+      ? `<button class="btn fin" onclick="setReady('${o.id}')">Finalizar ✓</button><button class="btn ghost danger" onclick="cancelOrder('${o.id}')">✕</button>`
       : `<button class="btn sepb" onclick="separar('${o.id}')">Separar ▶</button><button class="btn ghost danger" onclick="cancelOrder('${o.id}')">✕</button>`}
   </div>`;
   return `<div class="card"><h3>Importar nota do pedido (PDF)</h3>
