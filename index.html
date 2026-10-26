@@ -224,7 +224,7 @@ sb.auth.onAuthStateChange((ev, s) => {
 
 /* ---------- telas ---------- */
 function vLogin(){
-  return `<div class="card"><h3>Acesso da equipe</h3>
+  return `<div class="card"><h3>Acesso</h3>
     <input id="em" type="email" placeholder="E-mail" autocomplete="username">
     <input id="pw" type="password" placeholder="Senha" autocomplete="current-password" onkeydown="if(event.key==='Enter')login()">
     ${loginErr ? `<div class="err">${loginErr}</div>` : ""}
