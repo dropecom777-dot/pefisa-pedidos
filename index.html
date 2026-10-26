@@ -53,9 +53,10 @@ main.full{max-width:none;padding:16px}
 .chip .cn{display:block;font-size:clamp(13px,1.1vw,20px);font-weight:600;color:var(--mut)}
 .chip .nm{display:block;font-size:clamp(22px,2.3vw,44px);font-weight:700;letter-spacing:-.015em;margin-top:3px}
 .chip .ct{display:block;font-size:clamp(16px,1.6vw,28px);font-weight:500;color:#33405a;margin-top:4px}
+.chip .ob{display:block;font-size:clamp(14px,1.35vw,24px);font-style:italic;color:var(--mut);margin-top:6px}
 .col.r .chip .nm{color:var(--ok)}
 .flash{animation:fl 1s ease-in-out 8}
-.flash .cn,.flash .nm,.flash .ct{animation:flt 1s ease-in-out 8}
+.flash .cn,.flash .nm,.flash .ct,.flash .ob{animation:flt 1s ease-in-out 8}
 @keyframes fl{50%{background:var(--ok)}}
 @keyframes flt{50%{color:#fff}}
 .big{font-size:clamp(26px,7vw,42px);font-weight:700;text-align:center;margin:16px 0 4px}
@@ -268,7 +269,7 @@ function vTelao(){
   const pr = orders.filter(o => o.status === "pronto").sort((a,b) => b.readyAt - a.readyAt);
   const now = Date.now();
   const sep = orders.filter(o => o.status === "separando").sort((a,b) => (a.sepAt || 0) - (b.sepAt || 0));
-  const chip = (o, f) => `<div class="chip ${f && flashIds[o.id] > now ? "flash" : ""}"><span class="cn">Nº ${esc(o.numero)}</span><b class="nm">${esc(o.cliente) || "Sem nome"}</b>${o.cidade ? `<span class="ct">${esc(o.cidade)}</span>` : ""}</div>`;
+  const chip = (o, f) => `<div class="chip ${f && flashIds[o.id] > now ? "flash" : ""}"><span class="cn">Nº ${esc(o.numero)}</span><b class="nm">${esc(o.cliente) || "Sem nome"}</b>${o.cidade ? `<span class="ct">${esc(o.cidade)}</span>` : ""}${o.obs ? `<span class="ob">📝 ${esc(o.obs)}</span>` : ""}</div>`;
   return `<div class="tvbar">${soundOn ? "" : '<button class="btn" onclick="enableSound()">🔊 Ativar som</button>'}<button class="btn ghost" onclick="toggleFs()">⛶ Tela cheia</button><button class="btn ghost" onclick="view='balcao';render()">✕ Sair</button></div>
   <div class="tv">
     <div class="col p"><h2>⏳ Pendente</h2><div class="chips">${prep.map(o => chip(o,false)).join("") || '<span class="empty">—</span>'}</div></div>
