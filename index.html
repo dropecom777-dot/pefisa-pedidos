@@ -9,23 +9,24 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <title>Gerenciamento de Pedidos – Atacadão Pefisa</title>
 <style>
-:root{color-scheme:light;--bg:#cdd5e4;--card:#e8ecf4;--field:#dbe1ee;--tx:#182033;--mut:#4d586d;--bd:#b2bdd2;--pri:#262e77;--ok:#14663f;--okbg:#c4e1d0;--wait:#8f4f05;--waitbg:#efd9a6;--danger:#b3261e;--sep:#0a6592;--sepbg:#bcd9eb}
+:root{color-scheme:light;--bg:#cdd5e4;--card:#e8ecf4;--field:#f2f5fa;--tx:#182033;--mut:#4d586d;--bd:#b2bdd2;--pri:#262e77;--ok:#14663f;--okbg:#c4e1d0;--wait:#8f4f05;--waitbg:#efd9a6;--danger:#b3261e;--sep:#0a6592;--sepbg:#bcd9eb}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--tx);font-family:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:15px;line-height:1.4;-webkit-font-smoothing:antialiased;min-height:100vh}
-header{display:flex;align-items:center;justify-content:center;gap:8px;padding:8px 16px;background:var(--pri);color:#fff;border-bottom:5px solid;border-image:linear-gradient(90deg,#1f62c9 0%,#1f62c9 30%,#f2b705 40%,#f2b705 60%,#1f62c9 70%,#1f62c9 100%) 1;flex-wrap:wrap;box-shadow:0 2px 8px rgba(20,30,70,.25)}
+header{display:flex;align-items:center;justify-content:center;gap:8px;padding:8px 16px;background:var(--pri);color:#fff;border-bottom:5px solid;border-image:linear-gradient(90deg,#1f62c9,#f2b705) 1;flex-wrap:wrap;box-shadow:0 2px 8px rgba(20,30,70,.25)}
 .brand{flex:1 1 100%;display:flex;align-items:center;justify-content:center;gap:12px}.brand img{height:58px;width:58px;border-radius:50%;flex:none;box-shadow:0 0 0 2px rgba(255,255,255,.5)}.brand b{font-size:18px;font-weight:700;letter-spacing:-.01em;color:#fff}
 nav{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;width:100%}
-nav button{border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.1);color:#e6e9ff;padding:8px 14px;border-radius:8px;font-weight:600;font-size:14px;font-family:inherit;cursor:pointer}
-nav button:hover{background:rgba(255,255,255,.2)}
-nav button.on{background:var(--card);color:var(--pri);border-color:var(--card)}
-.top{position:sticky;top:0;z-index:5}
+nav button{border:1px solid var(--bd);background:var(--field);color:var(--pri);padding:9px 16px;border-radius:8px;font-weight:600;font-size:14px;font-family:inherit;cursor:pointer}
+nav button:hover{background:#e1e7f2}
+nav button.on{background:var(--pri);color:#fff;border-color:var(--pri)}
+.top{display:contents}
+.tabs{position:sticky;top:0;z-index:5;background:var(--card);border-bottom:1px solid var(--bd);padding:10px 16px;box-shadow:0 2px 6px rgba(20,30,70,.08)}
 .ptitle{max-width:980px;margin:0 auto;padding:18px 16px 0;text-align:center}
 .ptitle h1{margin:0;font-size:22px;font-weight:700;letter-spacing:-.01em;color:var(--pri)}
 .info .obs{display:block;font-size:13px;font-style:italic;color:var(--mut);margin-top:2px}
 main{padding:16px;max-width:980px;margin:0 auto}
 .card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:14px;box-shadow:0 1px 3px rgba(20,30,70,.08)}
 input{width:100%;padding:12px;border:1px solid var(--bd);border-radius:8px;background:var(--field);color:var(--tx);font:inherit;font-size:16px;margin-bottom:8px}
-input:focus{outline:2px solid var(--pri);outline-offset:-1px;background:var(--card)}
+input:focus{outline:2px solid var(--pri);outline-offset:-1px;background:#fff}
 .btn{border:0;border-radius:8px;padding:10px 15px;font-weight:600;font-size:14.5px;font-family:inherit;cursor:pointer;background:var(--pri);color:#fff;box-shadow:0 1px 2px rgba(20,30,70,.2);transition:filter .15s}
 .btn:hover{filter:brightness(1.15)}
 .btn.ok{background:var(--ok)}.btn.sepb{background:#f2b705;color:#2b2200}.btn.fin{background:#1f62c9}
@@ -67,8 +68,8 @@ main.full{max-width:none;padding:16px}
 <div class="top">
 <header>
   <div class="brand"><img class="lg" alt="Logo Atacadão Pefisa"><b>Atacadão Pefisa</b></div>
-  <nav id="nav"></nav>
 </header>
+<div class="tabs"><nav id="nav"></nav></div>
 </div>
 <div class="ptitle"><h1 id="ptitle">Gerenciamento de Pedidos</h1></div>
 <main id="app"></main>
@@ -247,7 +248,10 @@ function vBalcao(){
       ? `<button class="btn fin" onclick="setReady('${o.id}')">Finalizar ✓</button><button class="btn ghost danger" onclick="cancelOrder('${o.id}')">✕</button>`
       : `<button class="btn sepb" onclick="separar('${o.id}')">Separar ▶</button><button class="btn ghost danger" onclick="cancelOrder('${o.id}')">✕</button>`}
   </div>`;
-  return `<div class="card"><h3>Novo pedido</h3>
+  return `<div class="card"><h3>Importar nota do pedido (PDF)</h3>
+    <input type="file" id="pdf" accept="application/pdf" onchange="lerPdf(this.files[0])">
+    <div id="pdfmsg">${pdfBox()}</div></div>
+  <div class="card"><h3>Novo pedido</h3>
     <input id="fn" placeholder="Nº do pedido" autocomplete="off">
     <input id="fc" placeholder="Nome completo do cliente (com sobrenome)" autocomplete="off">
     <input id="fd" placeholder="Cidade" autocomplete="off">
@@ -255,9 +259,6 @@ function vBalcao(){
     <input id="fo" placeholder="Observações (opcional)" autocomplete="off">
     <label style="display:flex;gap:8px;align-items:center;font-size:14px;margin:4px 0 10px"><input type="checkbox" style="width:auto;margin:0" ${autoZap ? "checked" : ""} onchange="autoZap=this.checked"> Abrir WhatsApp com a mensagem ao marcar “Pronto”</label>
     <button class="btn" style="width:100%" onclick="addOrder()">Adicionar à fila</button></div>
-  <div class="card"><h3>Importar nota do pedido (PDF)</h3>
-    <input type="file" id="pdf" accept="application/pdf" onchange="lerPdf(this.files[0])">
-    <div id="pdfmsg">${pdfBox()}</div></div>
   <div class="card"><h3>Pendentes (${prep.length})</h3>${prep.map(o => line(o,0)).join("") || '<div class="empty">Nenhum pedido pendente.</div>'}</div>
   <div class="card"><h3>Separando (${sep.length})</h3>${sep.map(o => line(o,1)).join("") || '<div class="empty">Nenhum pedido sendo separado.</div>'}</div>
   <div class="card"><h3>Prontos para retirada (${pr.length})</h3>${pr.map(o => line(o,2)).join("") || '<div class="empty">Nenhum pedido pronto.</div>'}</div>`;
