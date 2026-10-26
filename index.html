@@ -9,14 +9,14 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <title>Gerenciamento de Pedidos – Atacadão Pefisa</title>
 <style>
-:root{color-scheme:light;--bg:#cdd5e4;--card:#e8ecf4;--field:#f2f5fa;--tx:#182033;--mut:#4d586d;--bd:#b2bdd2;--pri:#262e77;--ok:#14663f;--okbg:#c4e1d0;--wait:#8f4f05;--waitbg:#efd9a6;--danger:#b3261e;--sep:#0a6592;--sepbg:#bcd9eb}
+:root{color-scheme:light;--bg:#e2e9f5;--card:#eff3fa;--field:#fbfcfe;--tx:#182033;--mut:#4d586d;--bd:#c3cee2;--pri:#262e77;--ok:#14663f;--okbg:#d2efdf;--wait:#8f4f05;--waitbg:#f8e2b3;--danger:#b3261e;--sep:#0a6592;--sepbg:#cbe6f5}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--tx);font-family:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:15px;line-height:1.4;-webkit-font-smoothing:antialiased;min-height:100vh}
-header{display:flex;align-items:center;justify-content:center;gap:8px;padding:8px 16px;background:var(--pri);color:#fff;border-bottom:5px solid;border-image:linear-gradient(90deg,#1f62c9,#f2b705) 1;flex-wrap:wrap;box-shadow:0 2px 8px rgba(20,30,70,.25)}
+header{display:flex;align-items:center;justify-content:center;gap:8px;padding:8px 16px;background:var(--pri);color:#fff;border-bottom:5px solid;border-image:linear-gradient(90deg,#ffc800 0%,#ffc800 38%,#0a5cff 62%,#0a5cff 100%) 1;flex-wrap:wrap;box-shadow:0 2px 8px rgba(20,30,70,.25)}
 .brand{flex:1 1 100%;display:flex;align-items:center;justify-content:center;gap:12px}.brand img{height:58px;width:58px;border-radius:50%;flex:none;box-shadow:0 0 0 2px rgba(255,255,255,.5)}.brand b{font-size:18px;font-weight:700;letter-spacing:-.01em;color:#fff}
 nav{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;width:100%}
 nav button{border:1px solid var(--bd);background:var(--field);color:var(--pri);padding:9px 16px;border-radius:8px;font-weight:600;font-size:14px;font-family:inherit;cursor:pointer}
-nav button:hover{background:#e1e7f2}
+nav button:hover{background:#e6edf8}
 nav button.on{background:var(--pri);color:#fff;border-color:var(--pri)}
 .top{display:contents}
 .tabs{position:sticky;top:0;z-index:5;background:var(--card);border-bottom:1px solid var(--bd);padding:10px 16px;box-shadow:0 2px 6px rgba(20,30,70,.08)}
@@ -314,7 +314,7 @@ function histRows(L){
   return L.map(o => `<div class="row">
     <div class="num">Nº ${esc(o.numero)}</div>
     <div class="info"><b>${esc(o.cliente) || "Sem nome"}</b>${o.cidade ? `<span class="cid">${esc(o.cidade)}</span>` : ""}${o.obs ? `<span class="obs">📝 ${esc(o.obs)}</span>` : ""}
-      <small>${dia(o.createdAt)} ${hora(o.createdAt)}${o.sepAt ? " · separando " + hora(o.sepAt) : ""}${o.readyAt ? " · pronto " + hora(o.readyAt) + " (" + mins(o.createdAt, o.readyAt) + ")" : ""}${o.pickedAt ? " · retirado " + hora(o.pickedAt) : ""}${o.zapAt ? " · WhatsApp " + hora(o.zapAt) : ""}</small></div>
+      <small>${dia(o.createdAt)} ${hora(o.createdAt)}${o.sepAt ? " · separando " + hora(o.sepAt) : ""}${o.readyAt ? " · finalizado " + hora(o.readyAt) + (o.sepAt ? " (separação: " + mins(o.sepAt, o.readyAt) + ")" : "") : ""}${o.pickedAt ? " · retirado " + hora(o.pickedAt) : ""}${o.zapAt ? " · WhatsApp " + hora(o.zapAt) : ""}</small></div>
     <span class="tag ${o.status === "pronto" || o.status === "retirado" ? "r" : o.status === "separando" ? "s" : "w"}">${STL[o.status]}</span>
     ${o.status === "retirado" || o.status === "cancelado" ? `<button class="btn ghost" onclick="reopen('${o.id}')">Reabrir</button>` : ""}
   </div>`).join("") || '<div class="empty">Nenhum pedido neste filtro.</div>';
@@ -333,8 +333,8 @@ function vHistorico(){
 function exportCsv(){
   const c = v => '"' + String(v == null ? "" : v).replace(/"/g, '""') + '"';
   const f = t => t ? new Date(t).toLocaleString("pt-BR") : "";
-  const rows = [["Pedido","Cliente","Cidade","Telefone","Observações","Status","Entrada","Pronto","Retirado","WhatsApp"]].concat(
-    histList().map(o => [o.numero, o.cliente, o.cidade, o.telefone, o.obs, STL[o.status], f(o.createdAt), f(o.readyAt), f(o.pickedAt), f(o.zapAt)]));
+  const rows = [["Pedido","Cliente","Cidade","Telefone","Observações","Status","Entrada","Início da separação","Finalizado","Tempo de separação (min)","Retirado","WhatsApp"]].concat(
+    histList().map(o => [o.numero, o.cliente, o.cidade, o.telefone, o.obs, STL[o.status], f(o.createdAt), f(o.sepAt), f(o.readyAt), o.sepAt && o.readyAt ? Math.round((o.readyAt - o.sepAt) / 60000) : "", f(o.pickedAt), f(o.zapAt)]));
   const blob = new Blob(["\uFEFF" + rows.map(r => r.map(c).join(";")).join("\n")], {type:"text/csv;charset=utf-8"});
   const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "historico-pedidos-pefisa.csv"; a.click();
 }
