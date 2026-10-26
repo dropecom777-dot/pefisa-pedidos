@@ -7,23 +7,25 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<title>Gestão de Pedidos – Atacadão Pefisa</title>
+<title>Gerenciamento de Pedidos – Atacadão Pefisa</title>
 <style>
-:root{color-scheme:light;--bg:#e3e8f1;--card:#f6f8fc;--field:#eceff7;--tx:#1b2236;--mut:#5a6579;--bd:#c8d1e2;--pri:#262e77;--ok:#16704a;--okbg:#d4ebdd;--wait:#9a5607;--waitbg:#f6e3bd;--danger:#b3261e;--sep:#0b6e9e;--sepbg:#d1e6f3}
+:root{color-scheme:light;--bg:#cdd5e4;--card:#e8ecf4;--field:#dbe1ee;--tx:#182033;--mut:#4d586d;--bd:#b2bdd2;--pri:#262e77;--ok:#14663f;--okbg:#c4e1d0;--wait:#8f4f05;--waitbg:#efd9a6;--danger:#b3261e;--sep:#0a6592;--sepbg:#bcd9eb}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--tx);font-family:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:15px;line-height:1.4;-webkit-font-smoothing:antialiased;min-height:100vh}
-header{display:flex;align-items:center;justify-content:center;gap:8px;padding:8px 16px;background:var(--pri);color:#fff;border-bottom:5px solid;border-image:linear-gradient(90deg,#e4111c,#8f1d4f,#262e77 55%,#08abe6) 1;flex-wrap:wrap;box-shadow:0 2px 8px rgba(20,30,70,.25)}
+header{display:flex;align-items:center;justify-content:center;gap:8px;padding:8px 16px;background:var(--pri);color:#fff;border-bottom:5px solid;border-image:linear-gradient(90deg,#1f62c9 0%,#1f62c9 30%,#f2b705 40%,#f2b705 60%,#1f62c9 70%,#1f62c9 100%) 1;flex-wrap:wrap;box-shadow:0 2px 8px rgba(20,30,70,.25)}
 .brand{flex:1 1 100%;display:flex;align-items:center;justify-content:center;gap:12px}.brand img{height:58px;width:58px;border-radius:50%;flex:none;box-shadow:0 0 0 2px rgba(255,255,255,.5)}.brand b{font-size:18px;font-weight:700;letter-spacing:-.01em;color:#fff}
 nav{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;width:100%}
-nav button{border:1px solid var(--bd);background:var(--field);color:var(--pri);padding:9px 16px;border-radius:8px;font-weight:600;font-size:14px;font-family:inherit;cursor:pointer}
-nav button:hover{background:#dfe5f3}
-nav button.on{background:var(--pri);color:#fff;border-color:var(--pri)}
+nav button{border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.1);color:#e6e9ff;padding:8px 14px;border-radius:8px;font-weight:600;font-size:14px;font-family:inherit;cursor:pointer}
+nav button:hover{background:rgba(255,255,255,.2)}
+nav button.on{background:var(--card);color:var(--pri);border-color:var(--card)}
 .top{position:sticky;top:0;z-index:5}
-.tabs{background:var(--card);border-bottom:1px solid var(--bd);padding:9px 16px;box-shadow:0 2px 6px rgba(20,30,70,.08)}
+.ptitle{max-width:980px;margin:0 auto;padding:18px 16px 0;text-align:center}
+.ptitle h1{margin:0;font-size:22px;font-weight:700;letter-spacing:-.01em;color:var(--pri)}
+.info .obs{display:block;font-size:13px;font-style:italic;color:var(--mut);margin-top:2px}
 main{padding:16px;max-width:980px;margin:0 auto}
 .card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:14px;box-shadow:0 1px 3px rgba(20,30,70,.08)}
 input{width:100%;padding:12px;border:1px solid var(--bd);border-radius:8px;background:var(--field);color:var(--tx);font:inherit;font-size:16px;margin-bottom:8px}
-input:focus{outline:2px solid var(--pri);outline-offset:-1px;background:#fff}
+input:focus{outline:2px solid var(--pri);outline-offset:-1px;background:var(--card)}
 .btn{border:0;border-radius:8px;padding:10px 15px;font-weight:600;font-size:14.5px;font-family:inherit;cursor:pointer;background:var(--pri);color:#fff;box-shadow:0 1px 2px rgba(20,30,70,.2);transition:filter .15s}
 .btn:hover{filter:brightness(1.15)}
 .btn.ok{background:var(--ok)}.btn.sepb{background:#f2b705;color:#2b2200}.btn.fin{background:#1f62c9}
@@ -37,7 +39,7 @@ input:focus{outline:2px solid var(--pri);outline-offset:-1px;background:#fff}
 .tag.s{background:var(--sepbg);color:var(--sep)}.tag.w{background:var(--waitbg);color:var(--wait)}.tag.r{background:var(--okbg);color:var(--ok)}
 h3{margin:2px 0 12px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)}
 .tv{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;height:calc(100vh - 32px)}
-body.tvmode .top{display:none}
+body.tvmode .top,body.tvmode .ptitle{display:none}
 main.full{max-width:none;padding:16px}
 .tvbar{position:fixed;right:10px;bottom:10px;display:flex;gap:6px;z-index:9;opacity:.45}.tvbar:hover{opacity:1}
 @media(max-width:820px){.tv{grid-template-columns:1fr;height:auto}.tv .col{min-height:180px}}
@@ -65,9 +67,10 @@ main.full{max-width:none;padding:16px}
 <div class="top">
 <header>
   <div class="brand"><img class="lg" alt="Logo Atacadão Pefisa"><b>Atacadão Pefisa</b></div>
+  <nav id="nav"></nav>
 </header>
-<div class="tabs"><nav id="nav"></nav></div>
 </div>
+<div class="ptitle"><h1 id="ptitle">Gerenciamento de Pedidos</h1></div>
 <main id="app"></main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.0/dist/umd/supabase.js"></script>
@@ -90,7 +93,7 @@ const T = v => v ? new Date(v).getTime() : null;
 const hora = t => t ? new Date(t).toLocaleTimeString("pt-BR", {hour:"2-digit", minute:"2-digit"}) : "";
 const dia = t => t ? new Date(t).toLocaleDateString("pt-BR") : "";
 const norm = r => ({id:r.id, numero:r.numero, cliente:r.cliente, cidade:r.cidade, telefone:r.telefone, status:r.status,
-  createdAt:T(r.created_at), sepAt:T(r.separando_at), readyAt:T(r.ready_at), calledAt:T(r.called_at), pickedAt:T(r.picked_at), zapAt:T(r.zap_at)});
+  obs:r.observacoes, createdAt:T(r.created_at), sepAt:T(r.separando_at), readyAt:T(r.ready_at), calledAt:T(r.called_at), pickedAt:T(r.picked_at), zapAt:T(r.zap_at)});
 
 /* ---------- dados ---------- */
 async function load(){
@@ -134,7 +137,8 @@ function extrairNota(t){
   const cidade = pick([/(?:cidade|munic[íi]pio)\s*[:\-]\s*([^\n/]+?)(?=\s*(?:\/|\s-\s|\s+(?:uf|cep|bairro|fone|telefone|estado|cliente)\b|\n|$))/i]);
   const sec = t.slice(Math.max(0, t.search(/cliente/i)));
   const tel = (() => { for (const r of [/(?:celular|whats(?:app)?|telefone|fone|tel)\s*[:\-]?\s*(\(?\d{2}\)?\s*9\d{4}[-\s]?\d{4})/i, /(\(?\d{2}\)?\s*9\d{4}[-\s]?\d{4})/, /(?:telefone|fone|tel)\s*[:\-]?\s*(\(?\d{2}\)?\s*\d{4}[-\s]?\d{4})/i]) { const m = sec.match(r); if (m && m[1]) return m[1].trim(); } return ""; })();
-  return {numero, cliente: titulo(cliente), cidade: titulo(cidade), telefone: tel};
+  const obs = pick([/(?:observa[çc][õo]es?|obs\.?)\s*[:\-]\s*([^\n]+)/i]);
+  return {numero, cliente: titulo(cliente), cidade: titulo(cidade), telefone: tel, obs};
 }
 function pdfBox(){
   return pdfMsg + (pdfTxt ? `<details style="margin-top:8px"><summary style="cursor:pointer;color:var(--mut);font-size:13px">Ver texto lido do PDF</summary><pre style="white-space:pre-wrap;font-size:12px;max-height:200px;overflow:auto">${esc(pdfTxt)}</pre></details>` : "");
@@ -155,7 +159,7 @@ async function lerPdf(file){
     }
     pdfTxt = linhas.filter(Boolean).join("\n");
     if (pdfTxt.length < 20) { pdfTxt = ""; show("Não encontrei texto neste PDF (parece uma imagem escaneada). Preencha os dados manualmente."); return; }
-    const d = extrairNota(pdfTxt), map = {fn:d.numero, fc:d.cliente, fd:d.cidade, ft:d.telefone};
+    const d = extrairNota(pdfTxt), map = {fn:d.numero, fc:d.cliente, fd:d.cidade, ft:d.telefone, fo:d.obs};
     Object.entries(map).forEach(([id, v]) => { if (v && $("#"+id)) $("#"+id).value = v; });
     const falt = [["Nº do pedido", d.numero], ["Nome", d.cliente], ["Cidade", d.cidade], ["Telefone", d.telefone]].filter(x => !x[1]).map(x => x[0]);
     show("✅ Dados preenchidos abaixo. Confira e toque em <b>Adicionar à fila</b>." + (falt.length ? "<br>Não encontrei: " + falt.join(", ") + "." : ""));
@@ -163,15 +167,15 @@ async function lerPdf(file){
 }
 
 async function addOrder(){
-  const n = $("#fn").value.trim(), nome = $("#fc").value.trim(), cid = $("#fd").value.trim(), tel = $("#ft").value.trim();
+  const n = $("#fn").value.trim(), nome = $("#fc").value.trim(), cid = $("#fd").value.trim(), tel = $("#ft").value.trim(), obs = $("#fo").value.trim();
   if (!n) { $("#fn").focus(); return; }
-  const {error} = await sb.from("pedidos").insert({numero:n, cliente:nome || null, cidade:cid || null, telefone:tel || null});
+  const {error} = await sb.from("pedidos").insert({numero:n, cliente:nome || null, cidade:cid || null, telefone:tel || null, observacoes:obs || null});
   if (error) {
     alert(error.code === "23505" ? "Já existe um pedido ativo com o número " + n + "." :
           error.code === "42501" ? "Seu e-mail não está autorizado a cadastrar pedidos." : "Erro: " + error.message);
     return;
   }
-  ["#fn","#fc","#fd","#ft"].forEach(s => $(s).value = ""); $("#fn").focus();
+  ["#fn","#fc","#fd","#ft","#fo"].forEach(s => $(s).value = ""); $("#fn").focus();
 }
 function setReady(id){
   const o = byId(id); if (!o) return;
@@ -236,23 +240,24 @@ function vBalcao(){
   const pr = orders.filter(o => o.status === "pronto").sort((a,b) => b.readyAt - a.readyAt);
   const line = (o, m) => `<div class="row">
     <div class="num">Nº ${esc(o.numero)}</div>
-    <div class="info"><b>${esc(o.cliente) || "Sem nome"}</b>${o.cidade ? `<span class="cid">${esc(o.cidade)}</span>` : ""}<small>${m === 2 ? "Pronto às " + hora(o.readyAt) : m === 1 ? "Separando desde " + hora(o.sepAt) : "Entrou às " + hora(o.createdAt)}</small></div>
+    <div class="info"><b>${esc(o.cliente) || "Sem nome"}</b>${o.cidade ? `<span class="cid">${esc(o.cidade)}</span>` : ""}${o.obs ? `<span class="obs">📝 ${esc(o.obs)}</span>` : ""}<small>${m === 2 ? "Pronto às " + hora(o.readyAt) : m === 1 ? "Separando desde " + hora(o.sepAt) : "Entrou às " + hora(o.createdAt)}</small></div>
     ${m === 2
       ? `<button class="btn ghost" onclick="recall('${o.id}')">🔔 Chamar</button>${zap(o)}<button class="btn ok" onclick="finish('${o.id}')">Retirar</button><button class="btn ghost" onclick="back('${o.id}')">↩</button>`
       : m === 1
       ? `<button class="btn fin" onclick="setReady('${o.id}')">Finalizar ✓</button><button class="btn ghost danger" onclick="cancelOrder('${o.id}')">✕</button>`
       : `<button class="btn sepb" onclick="separar('${o.id}')">Separar ▶</button><button class="btn ghost danger" onclick="cancelOrder('${o.id}')">✕</button>`}
   </div>`;
-  return `<div class="card"><h3>Importar nota do pedido (PDF)</h3>
-    <input type="file" id="pdf" accept="application/pdf" onchange="lerPdf(this.files[0])">
-    <div id="pdfmsg">${pdfBox()}</div></div>
-  <div class="card"><h3>Novo pedido</h3>
+  return `<div class="card"><h3>Novo pedido</h3>
     <input id="fn" placeholder="Nº do pedido" autocomplete="off">
     <input id="fc" placeholder="Nome completo do cliente (com sobrenome)" autocomplete="off">
     <input id="fd" placeholder="Cidade" autocomplete="off">
     <input id="ft" placeholder="WhatsApp com DDD (opcional)" inputmode="tel" autocomplete="off">
+    <input id="fo" placeholder="Observações (opcional)" autocomplete="off">
     <label style="display:flex;gap:8px;align-items:center;font-size:14px;margin:4px 0 10px"><input type="checkbox" style="width:auto;margin:0" ${autoZap ? "checked" : ""} onchange="autoZap=this.checked"> Abrir WhatsApp com a mensagem ao marcar “Pronto”</label>
     <button class="btn" style="width:100%" onclick="addOrder()">Adicionar à fila</button></div>
+  <div class="card"><h3>Importar nota do pedido (PDF)</h3>
+    <input type="file" id="pdf" accept="application/pdf" onchange="lerPdf(this.files[0])">
+    <div id="pdfmsg">${pdfBox()}</div></div>
   <div class="card"><h3>Pendentes (${prep.length})</h3>${prep.map(o => line(o,0)).join("") || '<div class="empty">Nenhum pedido pendente.</div>'}</div>
   <div class="card"><h3>Separando (${sep.length})</h3>${sep.map(o => line(o,1)).join("") || '<div class="empty">Nenhum pedido sendo separado.</div>'}</div>
   <div class="card"><h3>Prontos para retirada (${pr.length})</h3>${pr.map(o => line(o,2)).join("") || '<div class="empty">Nenhum pedido pronto.</div>'}</div>`;
@@ -299,7 +304,7 @@ function histList(){
   const lim = hf.per === "hoje" ? d0 : hf.per === "7d" ? d0 - 6*864e5 : d0 - 29*864e5;
   const q = hf.q.toLowerCase();
   return orders.filter(o => o.createdAt >= lim && (hf.st === "todos" || o.status === hf.st) &&
-    (!q || [o.numero, o.cliente, o.cidade, o.telefone].some(v => String(v || "").toLowerCase().includes(q))))
+    (!q || [o.numero, o.cliente, o.cidade, o.telefone, o.obs].some(v => String(v || "").toLowerCase().includes(q))))
     .sort((a,b) => b.createdAt - a.createdAt);
 }
 const setHf = (k, v) => { hf[k] = v; render(); };
@@ -307,7 +312,7 @@ const mins = (a, b) => a && b ? Math.round((b - a) / 60000) + " min" : "—";
 function histRows(L){
   return L.map(o => `<div class="row">
     <div class="num">Nº ${esc(o.numero)}</div>
-    <div class="info"><b>${esc(o.cliente) || "Sem nome"}</b>${o.cidade ? `<span class="cid">${esc(o.cidade)}</span>` : ""}
+    <div class="info"><b>${esc(o.cliente) || "Sem nome"}</b>${o.cidade ? `<span class="cid">${esc(o.cidade)}</span>` : ""}${o.obs ? `<span class="obs">📝 ${esc(o.obs)}</span>` : ""}
       <small>${dia(o.createdAt)} ${hora(o.createdAt)}${o.sepAt ? " · separando " + hora(o.sepAt) : ""}${o.readyAt ? " · pronto " + hora(o.readyAt) + " (" + mins(o.createdAt, o.readyAt) + ")" : ""}${o.pickedAt ? " · retirado " + hora(o.pickedAt) : ""}${o.zapAt ? " · WhatsApp " + hora(o.zapAt) : ""}</small></div>
     <span class="tag ${o.status === "pronto" || o.status === "retirado" ? "r" : o.status === "separando" ? "s" : "w"}">${STL[o.status]}</span>
     ${o.status === "retirado" || o.status === "cancelado" ? `<button class="btn ghost" onclick="reopen('${o.id}')">Reabrir</button>` : ""}
@@ -317,7 +322,7 @@ function vHistorico(){
   const L = histList(), cnt = s => L.filter(o => o.status === s).length;
   const seg = (k, opts) => opts.map(([v, t]) => `<button class="btn ${hf[k] === v ? "" : "ghost"}" style="padding:8px 12px;font-size:14px" onclick="setHf('${k}','${v}')">${t}</button>`).join(" ");
   return `<div class="card"><h3>Histórico (últimos 30 dias)</h3>
-    <input placeholder="Buscar por nº, nome, cidade ou telefone" value="${esc(hf.q)}" autocomplete="off" oninput="hf.q=this.value;$('#hl').innerHTML=histRows(histList())">
+    <input placeholder="Buscar por nº, nome, cidade, telefone ou observação" value="${esc(hf.q)}" autocomplete="off" oninput="hf.q=this.value;$('#hl').innerHTML=histRows(histList())">
     <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px">${seg("per", [["hoje","Hoje"],["7d","7 dias"],["30d","30 dias"]])}</div>
     <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">${seg("st", [["todos","Todos"],["preparando","Pendentes"],["separando","Separando"],["pronto","Prontos"],["retirado","Retirados"],["cancelado","Cancelados"]])}</div>
     <div class="msg" style="text-align:left;margin-bottom:6px">${L.length} pedidos · ${cnt("retirado")} retirados · ${cnt("cancelado")} cancelados</div>
@@ -327,8 +332,8 @@ function vHistorico(){
 function exportCsv(){
   const c = v => '"' + String(v == null ? "" : v).replace(/"/g, '""') + '"';
   const f = t => t ? new Date(t).toLocaleString("pt-BR") : "";
-  const rows = [["Pedido","Cliente","Cidade","Telefone","Status","Entrada","Pronto","Retirado","WhatsApp"]].concat(
-    histList().map(o => [o.numero, o.cliente, o.cidade, o.telefone, STL[o.status], f(o.createdAt), f(o.readyAt), f(o.pickedAt), f(o.zapAt)]));
+  const rows = [["Pedido","Cliente","Cidade","Telefone","Observações","Status","Entrada","Pronto","Retirado","WhatsApp"]].concat(
+    histList().map(o => [o.numero, o.cliente, o.cidade, o.telefone, o.obs, STL[o.status], f(o.createdAt), f(o.readyAt), f(o.pickedAt), f(o.zapAt)]));
   const blob = new Blob(["\uFEFF" + rows.map(r => r.map(c).join(";")).join("\n")], {type:"text/csv;charset=utf-8"});
   const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "historico-pedidos-pefisa.csv"; a.click();
 }
@@ -338,15 +343,16 @@ function render(){
   $("#nav").innerHTML = tabs.map(([v,t]) => `<button class="${view === v ? "on" : ""}" onclick="view='${v}';render()">${t}</button>`).join("") +
     (session ? '<button onclick="logout()">Sair</button>' : "");
   if (!session && view !== "consulta") view = "balcao";
+  $("#ptitle").textContent = {consulta:"Consulta de Pedidos", historico:"Histórico de Pedidos"}[view] || "Gerenciamento de Pedidos";
   const tv = view === "telao" && !!session; document.body.classList.toggle("tvmode", tv); $("#app").className = tv ? "full" : "";
-  const keep = ["fn","fc","fd","ft","q"].map(i => $("#"+i) ? $("#"+i).value : null);
+  const keep = ["fn","fc","fd","ft","fo","q"].map(i => $("#"+i) ? $("#"+i).value : null);
   const active = document.activeElement && document.activeElement.id;
   $("#app").innerHTML = view === "consulta" ? vConsulta() : !session ? vLogin() :
     view === "balcao" ? vBalcao() : view === "telao" ? vTelao() : vHistorico();
-  ["fn","fc","fd","ft","q"].forEach((i, k) => { if (keep[k] && $("#"+i)) $("#"+i).value = keep[k]; });
+  ["fn","fc","fd","ft","fo","q"].forEach((i, k) => { if (keep[k] && $("#"+i)) $("#"+i).value = keep[k]; });
   if (active && $("#"+active)) $("#"+active).focus();
 }
-document.addEventListener("keydown", e => { if (e.key === "Enter" && /^f[ncdt]$/.test(e.target.id || "")) addOrder(); });
+document.addEventListener("keydown", e => { if (e.key === "Enter" && /^f[ncdto]$/.test(e.target.id || "")) addOrder(); });
 setInterval(() => { if (session) { if (view === "telao") render(); } }, 4000);
 setInterval(() => { if (session) load(); }, 60000);
 render();
