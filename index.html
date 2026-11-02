@@ -54,16 +54,22 @@ body.tvmode main.full{height:100vh;overflow:hidden}
 main.full{max-width:none;padding:16px}
 .tvbar{position:fixed;right:10px;bottom:10px;display:flex;gap:6px;z-index:9;opacity:.45}.tvbar:hover{opacity:1}
 @media(max-width:820px){.tv{grid-template-columns:1fr;height:auto}.tv .col{min-height:180px}}
-.tv .col{border-radius:14px;padding:18px;overflow:hidden;border:1px solid rgba(20,30,70,.08)}
+.tv .col{border-radius:16px;padding:clamp(12px,1.2vw,20px);overflow:hidden;border:1px solid rgba(20,30,70,.09);box-shadow:0 8px 24px rgba(20,30,70,.08)}
+.tv h2{display:flex;align-items:center;gap:9px;margin:0 0 14px;font-size:clamp(16px,1.55vw,27px);letter-spacing:-.02em}
+.tv-count{display:inline-flex;align-items:center;justify-content:center;min-width:30px;height:30px;padding:0 8px;border-radius:50%;font-size:14px;font-weight:800;line-height:1;background:rgba(255,255,255,.82);box-shadow:inset 0 0 0 1px rgba(20,30,70,.08);margin-left:auto}
+.tv .col.s .tv-count{color:var(--sep)}.tv .col.p .tv-count{color:var(--wait)}.tv .col.r .tv-count{color:var(--ok)}
+.tv .chips{animation:tvFadeSlide .65s cubic-bezier(.2,.7,.2,1) both}
+@keyframes tvFadeSlide{from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:translateX(0)}}
+@media(prefers-reduced-motion:reduce){.tv .chips{animation:none}}
 .tv .col.s{background:var(--sepbg)}.tv .col.p{background:var(--waitbg)}.tv .col.r{background:var(--okbg)}
 .tv h2{margin:0 0 16px;font-size:clamp(18px,1.8vw,30px);font-weight:700;letter-spacing:.02em;text-transform:uppercase}.tv-page{float:right;font-size:12px;font-weight:600;letter-spacing:0;text-transform:none;opacity:.75}
 .tv .col.s h2{color:var(--sep)}.tv .col.p h2{color:var(--wait)}.tv .col.r h2{color:var(--ok)}
 .chips{display:flex;flex-direction:column;gap:10px;overflow:hidden}
-.chip{background:var(--card);border-radius:10px;padding:13px 16px;text-align:left;line-height:1.15;box-shadow:0 1px 3px rgba(20,30,70,.1)}
+.chip{background:rgba(255,255,255,.94);border:1px solid rgba(20,30,70,.06);border-radius:11px;padding:10px 13px;text-align:left;line-height:1.12;box-shadow:0 3px 10px rgba(20,30,70,.07)}
 .chip .cn{display:block;font-size:clamp(13px,1.1vw,20px);font-weight:600;color:var(--mut)}
-.chip .nm{display:block;font-size:clamp(22px,2.3vw,44px);font-weight:700;letter-spacing:-.015em;margin-top:3px}
-.chip .ct{display:block;font-size:clamp(16px,1.6vw,28px);font-weight:500;color:#33405a;margin-top:4px}
-.chip .ob{display:block;font-size:clamp(14px,1.35vw,24px);font-style:italic;color:var(--mut);margin-top:6px}
+.chip .nm{display:block;font-size:clamp(19px,1.9vw,36px);font-weight:700;letter-spacing:-.02em;margin-top:3px}
+.chip .ct{display:block;font-size:clamp(14px,1.35vw,24px);font-weight:500;color:#33405a;margin-top:3px}
+.chip .ob{display:block;font-size:clamp(12px,1.1vw,19px);font-style:italic;color:var(--mut);margin-top:5px}
 .col.r .chip .nm{color:var(--ok)}
 .flash{animation:fl 1s ease-in-out 8}
 .flash .cn,.flash .nm,.flash .ct,.flash .ob{animation:flt 1s ease-in-out 8}
@@ -321,7 +327,7 @@ function vTelao(){
   const prep = orders.filter(o => o.status === "preparando").sort((a,b) => a.createdAt - b.createdAt);
   const pr = orders.filter(o => o.status === "pronto").sort((a,b) => b.readyAt - a.readyAt);
   const sep = orders.filter(o => o.status === "separando").sort((a,b) => (a.sepAt || 0) - (b.sepAt || 0));
-  const now = Date.now(), perPage = 5;
+  const now = Date.now(), perPage = 4;
   const pageCount = list => Math.max(1, Math.ceil(list.length / perPage));
   const pages = {p:pageCount(prep),s:pageCount(sep),r:pageCount(pr)};
   const pageSlice = (list,key) => list.slice((tvPage[key] % pages[key]) * perPage, (tvPage[key] % pages[key]) * perPage + perPage);
@@ -329,9 +335,9 @@ function vTelao(){
   const chip = (o, f) => `<div class="chip ${f && flashIds[o.id] > now ? "flash" : ""}"><span class="cn">Nº ${esc(o.numero)}</span><b class="nm">${esc(o.cliente) || "Sem nome"}</b>${o.cidade ? `<span class="ct">${esc(o.cidade)}</span>` : ""}${o.obs ? `<span class="ob">📝 ${esc(o.obs)}</span>` : ""}</div>`;
   return `<div class="tvbar">${soundOn ? "" : '<button class="btn" onclick="enableSound()">🔊 Ativar som</button>'}<button class="btn ghost" onclick="toggleFs()">⛶ Tela cheia</button><button class="btn ghost" onclick="view='balcao';render()">✕ Sair</button></div>
   <div class="tv">
-    <div class="col p"><h2>⏳ Pendente ${pageLabel(prep,"p")}</h2><div class="chips">${pageSlice(prep,"p").map(o => chip(o,false)).join("") || '<span class="empty">—</span>'}</div></div>
-    <div class="col s"><h2>📦 Separando ${pageLabel(sep,"s")}</h2><div class="chips">${pageSlice(sep,"s").map(o => chip(o,false)).join("") || '<span class="empty">—</span>'}</div></div>
-    <div class="col r"><h2>✅ Pronto para retirada ${pageLabel(pr,"r")}</h2><div class="chips">${pageSlice(pr,"r").map(o => chip(o,true)).join("") || '<span class="empty">—</span>'}</div></div>
+    <div class="col p"><h2>⏳ Pendente <span class="tv-count" aria-label="${prep.length} pedidos">${prep.length}</span>${pageLabel(prep,"p")}</h2><div class="chips">${pageSlice(prep,"p").map(o => chip(o,false)).join("") || '<span class="empty">—</span>'}</div></div>
+    <div class="col s"><h2>📦 Separando <span class="tv-count" aria-label="${sep.length} pedidos">${sep.length}</span>${pageLabel(sep,"s")}</h2><div class="chips">${pageSlice(sep,"s").map(o => chip(o,false)).join("") || '<span class="empty">—</span>'}</div></div>
+    <div class="col r"><h2>✅ Pronto para retirada <span class="tv-count" aria-label="${pr.length} pedidos">${pr.length}</span>${pageLabel(pr,"r")}</h2><div class="chips">${pageSlice(pr,"r").map(o => chip(o,true)).join("") || '<span class="empty">—</span>'}</div></div>
   </div>`;
 }
 function vConsulta(){
