@@ -20,6 +20,7 @@ nav{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;width:100%}
 nav button{border:1px solid var(--bd);background:var(--field);color:var(--pri);padding:9px 16px;border-radius:8px;font-weight:600;font-size:14px;font-family:inherit;cursor:pointer}
 nav button:hover{background:#e6edf8}
 nav button.on{background:var(--pri);color:#fff;border-color:var(--pri)}
+.userbadge{display:inline-flex;align-items:center;padding:8px 12px;border:1px solid rgba(255,255,255,.35);border-radius:8px;background:rgba(255,255,255,.12);color:#fff;font-size:13px;font-weight:600;white-space:nowrap}
 .top{display:contents}
 .tabs{position:sticky;top:0;z-index:5;background:var(--card);border-bottom:1px solid var(--bd);padding:10px 16px;box-shadow:0 2px 6px rgba(20,30,70,.08)}
 .ptitle{max-width:980px;margin:0 auto;padding:18px 16px 0;text-align:center}
@@ -87,6 +88,7 @@ const SB_KEY = "sb_publishable_jO5dg7oBFxvup4SJUbaIAQ_PFNDFBlS";
 const sb = supabase.createClient(SB_URL, SB_KEY);
 
 let session = null, orders = [], chan = null, soundOn = false, actx = null, autoZap = true, loginErr = "", cRes = null;
+let equipeAtual = null;
 let view = location.hash === "#consulta" ? "consulta" : "balcao";
 let pdfMsg = "", pdfTxt = "";
 let hf = {q:"", st:"todos", per:"hoje"}, lastCall = {}, flashIds = {};
@@ -224,10 +226,25 @@ async function login(){
   if (error) { loginErr = "E-mail ou senha incorretos."; render(); }
 }
 const logout = () => sb.auth.signOut();
+async function carregarEquipe(user){
+  equipeAtual = null;
+  if (!user?.email) return;
+  const {data, error} = await sb.rpc("meu_perfil_equipe");
+  if (session?.user?.id !== user.id) return;
+  if (error) { console.warn("Não foi possível carregar o perfil da equipe."); return; }
+  equipeAtual = Array.isArray(data) ? (data[0] || null) : (data || null);
+}
 sb.auth.onAuthStateChange((ev, s) => {
   session = s;
-  if (s) { load(); subscribe(); }
-  else { orders = []; if (chan) { sb.removeChannel(chan); chan = null; } }
+  equipeAtual = null;
+  if (s) {
+    load();
+    subscribe();
+    Promise.resolve().then(() => carregarEquipe(s.user).then(() => render()));
+  } else {
+    orders = [];
+    if (chan) { sb.removeChannel(chan); chan = null; }
+  }
   render();
 });
 
@@ -345,8 +362,10 @@ function exportCsv(){
 
 function render(){
   const tabs = session ? [["balcao","Balcão"],["telao","Telão"],["consulta","Consulta"],["historico","Histórico"]] : [["balcao","Equipe"],["consulta","Consulta"]];
+  const nomeEquipe = equipeAtual?.nome || session?.user?.email || "";
+  const perfilEquipe = equipeAtual?.perfil || "Equipe";
   $("#nav").innerHTML = tabs.map(([v,t]) => `<button class="${view === v ? "on" : ""}" onclick="view='${v}';render()">${t}</button>`).join("") +
-    (session ? '<button onclick="logout()">Sair</button>' : "");
+    (session ? '<span class="userbadge">' + esc(nomeEquipe) + ' · ' + esc(perfilEquipe) + '</span><button onclick="logout()">Sair</button>' : "");
   if (!session && view !== "consulta") view = "balcao";
   $("#ptitle").textContent = {consulta:"Consulta de Pedidos", historico:"Histórico de Pedidos"}[view] || "Gerenciamento de Pedidos";
   const tv = view === "telao" && !!session; document.body.classList.toggle("tvmode", tv); $("#app").className = tv ? "full" : "";
