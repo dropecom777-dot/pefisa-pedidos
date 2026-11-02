@@ -47,16 +47,18 @@ input:focus{outline:2px solid var(--pri);outline-offset:-1px;background:#fff}
 .tag{font-size:12px;font-weight:600;padding:3px 10px;border-radius:6px}
 .tag.s{background:var(--sepbg);color:var(--sep)}.tag.w{background:var(--waitbg);color:var(--wait)}.tag.r{background:var(--okbg);color:var(--ok)}
 h3{margin:2px 0 12px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)}
-.tv{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;height:calc(100vh - 32px)}
-body.tvmode .top,body.tvmode .ptitle{display:none}
+.tv{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;height:calc(100vh - 32px);overflow:hidden}
+body.tvmode .top,body.tvmode .ptitle,body.tvmode .tabs{display:none}
+body.tvmode{overflow:hidden}
+body.tvmode main.full{height:100vh;overflow:hidden}
 main.full{max-width:none;padding:16px}
 .tvbar{position:fixed;right:10px;bottom:10px;display:flex;gap:6px;z-index:9;opacity:.45}.tvbar:hover{opacity:1}
 @media(max-width:820px){.tv{grid-template-columns:1fr;height:auto}.tv .col{min-height:180px}}
-.tv .col{border-radius:14px;padding:18px;overflow:auto;border:1px solid rgba(20,30,70,.08)}
+.tv .col{border-radius:14px;padding:18px;overflow:hidden;border:1px solid rgba(20,30,70,.08)}
 .tv .col.s{background:var(--sepbg)}.tv .col.p{background:var(--waitbg)}.tv .col.r{background:var(--okbg)}
-.tv h2{margin:0 0 16px;font-size:clamp(18px,1.8vw,30px);font-weight:700;letter-spacing:.02em;text-transform:uppercase}
+.tv h2{margin:0 0 16px;font-size:clamp(18px,1.8vw,30px);font-weight:700;letter-spacing:.02em;text-transform:uppercase}.tv-page{float:right;font-size:12px;font-weight:600;letter-spacing:0;text-transform:none;opacity:.75}
 .tv .col.s h2{color:var(--sep)}.tv .col.p h2{color:var(--wait)}.tv .col.r h2{color:var(--ok)}
-.chips{display:flex;flex-direction:column;gap:10px}
+.chips{display:flex;flex-direction:column;gap:10px;overflow:hidden}
 .chip{background:var(--card);border-radius:10px;padding:13px 16px;text-align:left;line-height:1.15;box-shadow:0 1px 3px rgba(20,30,70,.1)}
 .chip .cn{display:block;font-size:clamp(13px,1.1vw,20px);font-weight:600;color:var(--mut)}
 .chip .nm{display:block;font-size:clamp(22px,2.3vw,44px);font-weight:700;letter-spacing:-.015em;margin-top:3px}
@@ -97,6 +99,7 @@ let equipeAtual = null, conferencias = {};
 let view = location.hash === "#consulta" ? "consulta" : "balcao";
 let pdfMsg = "", pdfTxt = "";
 let hf = {q:"", st:"todos", per:"hoje"}, lastCall = {}, flashIds = {};
+let tvPage = {p:0,s:0,r:0}, tvPageChangedAt = 0;
 const STL = {preparando:"Pendente", separando:"Separando", pronto:"Pronto", retirado:"Retirado", cancelado:"Cancelado"};
 
 const $ = s => document.querySelector(s);
@@ -317,14 +320,18 @@ function vBalcao(){
 function vTelao(){
   const prep = orders.filter(o => o.status === "preparando").sort((a,b) => a.createdAt - b.createdAt);
   const pr = orders.filter(o => o.status === "pronto").sort((a,b) => b.readyAt - a.readyAt);
-  const now = Date.now();
   const sep = orders.filter(o => o.status === "separando").sort((a,b) => (a.sepAt || 0) - (b.sepAt || 0));
+  const now = Date.now(), perPage = 5;
+  const pageCount = list => Math.max(1, Math.ceil(list.length / perPage));
+  const pages = {p:pageCount(prep),s:pageCount(sep),r:pageCount(pr)};
+  const pageSlice = (list,key) => list.slice((tvPage[key] % pages[key]) * perPage, (tvPage[key] % pages[key]) * perPage + perPage);
+  const pageLabel = (list,key) => pages[key] > 1 ? `<small class="tv-page">Página ${(tvPage[key] % pages[key])+1}/${pages[key]}</small>` : "";
   const chip = (o, f) => `<div class="chip ${f && flashIds[o.id] > now ? "flash" : ""}"><span class="cn">Nº ${esc(o.numero)}</span><b class="nm">${esc(o.cliente) || "Sem nome"}</b>${o.cidade ? `<span class="ct">${esc(o.cidade)}</span>` : ""}${o.obs ? `<span class="ob">📝 ${esc(o.obs)}</span>` : ""}</div>`;
   return `<div class="tvbar">${soundOn ? "" : '<button class="btn" onclick="enableSound()">🔊 Ativar som</button>'}<button class="btn ghost" onclick="toggleFs()">⛶ Tela cheia</button><button class="btn ghost" onclick="view='balcao';render()">✕ Sair</button></div>
   <div class="tv">
-    <div class="col p"><h2>⏳ Pendente</h2><div class="chips">${prep.map(o => chip(o,false)).join("") || '<span class="empty">—</span>'}</div></div>
-    <div class="col s"><h2>📦 Separando</h2><div class="chips">${sep.map(o => chip(o,false)).join("") || '<span class="empty">—</span>'}</div></div>
-    <div class="col r"><h2>✅ Pronto para retirada</h2><div class="chips">${pr.map(o => chip(o,true)).join("") || '<span class="empty">—</span>'}</div></div>
+    <div class="col p"><h2>⏳ Pendente ${pageLabel(prep,"p")}</h2><div class="chips">${pageSlice(prep,"p").map(o => chip(o,false)).join("") || '<span class="empty">—</span>'}</div></div>
+    <div class="col s"><h2>📦 Separando ${pageLabel(sep,"s")}</h2><div class="chips">${pageSlice(sep,"s").map(o => chip(o,false)).join("") || '<span class="empty">—</span>'}</div></div>
+    <div class="col r"><h2>✅ Pronto para retirada ${pageLabel(pr,"r")}</h2><div class="chips">${pageSlice(pr,"r").map(o => chip(o,true)).join("") || '<span class="empty">—</span>'}</div></div>
   </div>`;
 }
 function vConsulta(){
@@ -413,7 +420,7 @@ let lastAct = Date.now();
 ["click","keydown","touchstart","mousemove"].forEach(ev => document.addEventListener(ev, () => { lastAct = Date.now(); }, {passive:true}));
 setInterval(() => { if (session && view !== "telao" && Date.now() - lastAct > 60*60*1000) { logout(); alert("Sessão encerrada por inatividade. Entre novamente."); } }, 60000);
 document.addEventListener("keydown", e => { if (e.key === "Enter" && /^f[ncdto]$/.test(e.target.id || "")) addOrder(); });
-setInterval(() => { if (session) { if (view === "telao") render(); } }, 4000);
+setInterval(() => { if (session && view === "telao") { if (Date.now() - tvPageChangedAt >= 8000) { ["p","s","r"].forEach(k => tvPage[k]++); tvPageChangedAt = Date.now(); } render(); } }, 4000);
 setInterval(() => { if (session) load(); }, 60000);
 render();
 </script>
