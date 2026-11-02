@@ -237,6 +237,7 @@ async function carregarEquipe(user){
   if (session?.user?.id !== user.id) return;
   if (error) { console.warn("Não foi possível carregar o perfil da equipe."); return; }
   equipeAtual = Array.isArray(data) ? (data[0] || null) : (data || null);
+  if (equipeAtual?.perfil === "conferente") await load();
 }
 sb.auth.onAuthStateChange((ev, s) => {
   session = s;
