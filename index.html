@@ -22,7 +22,7 @@ nav button:hover{background:#e6edf8}
 nav button.on{background:var(--pri);color:#fff;border-color:var(--pri)}
 .userbadge{display:inline-flex;align-items:center;padding:8px 12px;margin-left:auto;border:1px solid #e1e5ec;border-radius:10px;background:#fff;color:#243247;font-size:13px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(20,35,55,.08)}
 .top{display:contents}
-.tabs{position:sticky;top:0;z-index:5;background:var(--card);border-bottom:1px solid var(--bd);padding:10px 16px;box-shadow:0 2px 6px rgba(20,30,70,.08)}
+.tabs{position:static;background:transparent;border:0;padding:10px 16px;box-shadow:none}
 .ptitle{max-width:980px;margin:0 auto;padding:14px 16px 10px;position:relative;display:flex;align-items:center;justify-content:center;min-height:64px;text-align:center}
 .ptitle h1{margin:0 auto;font-size:23px;font-weight:700;letter-spacing:-.01em;color:var(--pri);text-align:center}
 #account{position:absolute;right:16px;top:50%;transform:translateY(-50%);display:flex;align-items:center;gap:9px}
@@ -394,10 +394,10 @@ function render(){
   const isConf = session && equipeAtual?.perfil === "conferente";
   if (isConf && !["conferente","consulta"].includes(view)) view = "conferente";
   const tabs = isConf ? [["conferente","Conferência"]] : session ? [["balcao","Balcão"],["telao","Telão"],["consulta","Consulta"],["historico","Histórico"]] : [["balcao","Equipe"],["consulta","Consulta"]];
-  const nomeEquipe = equipeAtual?.nome || session?.user?.email || "";
+  const nomeEquipe = equipeAtual?.nome || "";
   const perfilEquipe = equipeAtual?.perfil || "Equipe";
   $("#nav").innerHTML = tabs.map(([v,t]) => "<button class=\"" + (view === v ? "on" : "") + "\" onclick=\"view=\'" + v + "\';render()\">" + t + "</button>").join("");
-  const nomePerfil = nomeEquipe || "equipe"; const iniciais = nomePerfil.trim().split(/\s+/).slice(0,2).map(p => p.charAt(0).toUpperCase()).join("");
+  const nomePerfil = nomeEquipe || "Equipe"; const iniciais = nomePerfil.trim().split(/\s+/).slice(0,2).map(p => p.charAt(0).toUpperCase()).join("");
   $("#account").innerHTML = session ? "<span class=\"profile\"><span class=\"profile-avatar\" aria-hidden=\"true\">" + esc(iniciais || "U") + "</span><span>" + esc(nomePerfil) + "</span></span><button class=\"userbadge\" style=\"cursor:pointer\" onclick=\"logout()\">Sair</button>" : "";
   if (!session && view !== "consulta") view = "balcao";
   $("#ptitle").textContent = {consulta:"Consulta de Pedidos", historico:"Histórico de Pedidos", conferente:"Conferência de Pedidos"}[view] || "Gerenciamento de Pedidos";
