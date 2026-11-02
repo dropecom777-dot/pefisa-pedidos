@@ -350,13 +350,20 @@ function vTelao(){
   const prep = orders.filter(o => o.status === "preparando").sort((a,b) => a.createdAt - b.createdAt);
   const pr = orders.filter(o => o.status === "pronto").sort((a,b) => b.readyAt - a.readyAt);
   const sep = orders.filter(o => o.status === "separando").sort((a,b) => (a.sepAt || 0) - (b.sepAt || 0));
-  const now = Date.now();
+  const now = Date.now(), perPage = 4;
+  const page = (list, key) => {
+    const pages = Math.max(1, Math.ceil(list.length / perPage));
+    tvPage[key] = tvPage[key] % pages;
+    return {items:list.slice(tvPage[key] * perPage, (tvPage[key] + 1) * perPage), pages};
+  };
+  const P = {p:page(prep,"p"), s:page(sep,"s"), r:page(pr,"r")};
   const chip = (o, f) => `<div class="chip ${f && flashIds[o.id] > now ? "flash" : ""}"><span class="cn">Nº ${esc(o.numero)}</span><b class="nm">${esc(o.cliente) || "Sem nome"}</b>${o.cidade ? `<span class="ct">${esc(o.cidade)}</span>` : ""}${o.obs ? `<span class="ob">📝 ${esc(o.obs)}</span>` : ""}</div>`;
+  const pageLabel = x => x.pages > 1 ? `<span class="tv-page">${tvPage[x===P.p?"p":x===P.s?"s":"r"]+1}/${x.pages}</span>` : "";
   return `<div class="tvbar">${soundOn ? "" : '<button class="btn" onclick="enableSound()">🔊 Ativar som</button>'}<button class="btn ghost" onclick="toggleFs()">⛶ Tela cheia</button><button class="btn ghost" onclick="view='balcao';render()">✕ Sair</button></div>
   <div class="tv">
-    <div class="col p"><h2>⏳ Pendente <span class="tv-count" aria-label="${prep.length} pedidos">${prep.length}</span></h2><div class="chips">${prep.map(o => chip(o,false)).join("") || '<span class="empty">—</span>'}</div></div>
-    <div class="col s"><h2>📦 Separando <span class="tv-count" aria-label="${sep.length} pedidos">${sep.length}</span></h2><div class="chips">${sep.map(o => chip(o,false)).join("") || '<span class="empty">—</span>'}</div></div>
-    <div class="col r"><h2>✅ Pronto para retirada <span class="tv-count" aria-label="${pr.length} pedidos">${pr.length}</span></h2><div class="chips">${pr.map(o => chip(o,true)).join("") || '<span class="empty">—</span>'}</div></div>
+    <div class="col p"><h2>⏳ Pendente <span class="tv-count" aria-label="${prep.length} pedidos">${prep.length}</span>${pageLabel(P.p)}</h2><div class="chips tv-fade" key="${tvPage.p}">${P.p.items.map(o => chip(o,false)).join("") || '<span class="empty">—</span>'}</div></div>
+    <div class="col s"><h2>📦 Separando <span class="tv-count" aria-label="${sep.length} pedidos">${sep.length}</span>${pageLabel(P.s)}</h2><div class="chips tv-fade" key="${tvPage.s}">${P.s.items.map(o => chip(o,false)).join("") || '<span class="empty">—</span>'}</div></div>
+    <div class="col r"><h2>✅ Pronto para retirada <span class="tv-count" aria-label="${pr.length} pedidos">${pr.length}</span>${pageLabel(P.r)}</h2><div class="chips tv-fade" key="${tvPage.r}">${P.r.items.map(o => chip(o,true)).join("") || '<span class="empty">—</span>'}</div></div>
   </div>`;
 }
 function vConsulta(){
@@ -445,7 +452,7 @@ let lastAct = Date.now();
 ["click","keydown","touchstart","mousemove"].forEach(ev => document.addEventListener(ev, () => { lastAct = Date.now(); }, {passive:true}));
 setInterval(() => { if (session && view !== "telao" && Date.now() - lastAct > 60*60*1000) { logout(); alert("Sessão encerrada por inatividade. Entre novamente."); } }, 60000);
 document.addEventListener("keydown", e => { if (e.key === "Enter" && /^f[ncdto]$/.test(e.target.id || "")) addOrder(); });
-setInterval(() => { if (session && view === "telao") { document.querySelectorAll(".tv .chips").forEach(el => { const max = el.scrollHeight - el.clientHeight; if (max <= 0) return; if (el.scrollTop >= max - 1) el.scrollTop = 0; else el.scrollTop += 1; }); } }, 45);
+setInterval(() => { if (session && view === "telao") { const keys = ["p","s","r"]; let changed = false; keys.forEach(k => { const total = orders.filter(o => o.status === ({p:"preparando",s:"separando",r:"pronto"}[k])).length; const pages = Math.max(1, Math.ceil(total / 4)); if (pages > 1) { tvPage[k] = (tvPage[k] + 1) % pages; changed = true; } }); if (changed) render(); } }, 5000);
 setInterval(() => { if (session) load(); }, 60000);
 render();
 </script>
