@@ -398,7 +398,7 @@ function render(){
   const perfilEquipe = equipeAtual?.perfil || "Equipe";
   $("#nav").innerHTML = tabs.map(([v,t]) => "<button class=\"" + (view === v ? "on" : "") + "\" onclick=\"view=\'" + v + "\';render()\">" + t + "</button>").join("");
   const nomePerfil = nomeEquipe || "equipe"; const iniciais = nomePerfil.trim().split(/\s+/).slice(0,2).map(p => p.charAt(0).toUpperCase()).join("");
-  $("#account").innerHTML = session ? "<span class=\"profile\"><span class=\"profile-avatar\" aria-hidden=\"true\">" + esc(iniciais || "U") + "</span><span>" + esc(nomePerfil) + "</span></span><button class=\"userbadge\" style=\"cursor:pointer\" onclick=\"logout()\">Sair</button>" : "";
+  $("#account").innerHTML = session ? "<span class=\"profile\"><span class=\"profile-avatar\" aria-hidden=\"true\">" + esc(iniciais || "U") + "</span><span>" + "<span style=\"display:block;font-size:11px;font-weight:500;color:var(--mut)\">Olá</span>" + esc(nomePerfil) + "</span></span><button class=\"userbadge\" style=\"cursor:pointer\" onclick=\"logout()\">Sair</button>" : "";
   if (!session && view !== "consulta") view = "balcao";
   $("#ptitle").textContent = {consulta:"Consulta de Pedidos", historico:"Histórico de Pedidos", conferente:"Conferência de Pedidos"}[view] || "Gerenciamento de Pedidos";
   const tv = view === "telao" && !!session; document.body.classList.toggle("tvmode", tv); $("#app").className = tv ? "full" : "";
