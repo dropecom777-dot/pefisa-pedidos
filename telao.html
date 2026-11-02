@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src https://fgdqkflpirqrelhixpvn.supabase.co wss://fgdqkflpirqrelhixpvn.supabase.co https://cdnjs.cloudflare.com; worker-src blob: https://cdnjs.cloudflare.com; child-src blob:; base-uri 'none'; form-action 'none'; object-src 'none'">
+<meta name="referrer" content="no-referrer">
+<link rel="icon" href="data:image/png;base64,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">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<title>Gerenciamento de Pedidos – Atacadão Pefisa</title>
+<style>
+:root{color-scheme:light;--bg:#e2e9f5;--card:#eff3fa;--field:#fbfcfe;--tx:#182033;--mut:#4d586d;--bd:#c3cee2;--pri:#262e77;--ok:#14663f;--okbg:#d2efdf;--wait:#8f4f05;--waitbg:#f8e2b3;--danger:#b3261e;--sep:#0a6592;--sepbg:#cbe6f5}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:15px;line-height:1.4;-webkit-font-smoothing:antialiased;min-height:100vh}
+header{display:flex;align-items:center;justify-content:center;gap:8px;padding:8px 16px;background:var(--pri);color:#fff;border-bottom:5px solid #526d99;flex-wrap:wrap;box-shadow:0 2px 8px rgba(20,30,70,.25)}
+.brand{flex:1 1 100%;display:flex;align-items:center;justify-content:center;gap:12px}.brand img{height:58px;width:58px;border-radius:50%;flex:none;box-shadow:0 0 0 2px rgba(255,255,255,.5)}.brand b{font-size:18px;font-weight:700;letter-spacing:-.01em;color:#fff}
+nav{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;width:100%}
+nav button{border:1px solid var(--bd);background:var(--field);color:var(--pri);padding:9px 16px;border-radius:8px;font-weight:600;font-size:14px;font-family:inherit;cursor:pointer}
+nav button:hover{background:#e6edf8}
+nav button.on{background:var(--pri);color:#fff;border-color:var(--pri)}
+.userbadge{display:inline-flex;align-items:center;padding:8px 12px;margin-left:auto;border:1px solid #e1e5ec;border-radius:10px;background:#fff;color:#243247;font-size:13px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(20,35,55,.08)}
+.top{display:contents}
+.tabs{position:static;background:transparent;border:0;padding:10px 16px;box-shadow:none}
+.ptitle{max-width:980px;margin:0 auto;padding:14px 16px 10px;position:relative;display:flex;align-items:center;justify-content:center;min-height:64px;text-align:center}
+.ptitle h1{margin:0 auto;font-size:23px;font-weight:700;letter-spacing:-.01em;color:var(--pri);text-align:center}
+#account{position:absolute;right:16px;top:50%;transform:translateY(-50%);display:flex;align-items:center;gap:9px}
+.profile{display:flex;align-items:center;gap:8px;color:var(--tx);font-size:13px;font-weight:600;white-space:nowrap}.profile-name{display:flex;flex-direction:column;justify-content:center;min-height:36px}
+.profile-avatar{width:36px;height:36px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:var(--pri);color:#fff;font-size:13px;font-weight:700;flex:none;border:2px solid #fff;box-shadow:0 0 0 1px var(--bd)}
+.userbadge{display:inline-flex;align-items:center;padding:7px 10px;border:1px solid var(--bd);border-radius:8px;background:#fff;color:var(--pri);font-size:12px;font-weight:700;white-space:nowrap}
+@media(max-width:640px){.ptitle{padding:12px 12px 10px;flex-direction:column;gap:9px}.ptitle h1{font-size:20px}#account{position:static;transform:none;justify-content:center;flex-wrap:wrap}.profile{white-space:normal}}
+.info .obs{display:block;font-size:13px;font-style:italic;color:var(--mut);margin-top:2px}
+main{padding:16px;max-width:980px;margin:0 auto}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:14px;box-shadow:0 1px 3px rgba(20,30,70,.08)}
+input{width:100%;padding:12px;border:1px solid var(--bd);border-radius:8px;background:var(--field);color:var(--tx);font:inherit;font-size:16px;margin-bottom:8px}
+input:focus{outline:2px solid var(--pri);outline-offset:-1px;background:#fff}
+.btn{border:0;border-radius:8px;padding:10px 15px;font-weight:600;font-size:14.5px;font-family:inherit;cursor:pointer;background:var(--pri);color:#fff;box-shadow:0 1px 2px rgba(20,30,70,.2);transition:filter .15s}
+.btn:hover{filter:brightness(1.15)}
+.btn.ok{background:var(--ok)}.btn.sepb{background:#f2b705;color:#2b2200}.btn.fin{background:#1f62c9}
+.btn.ghost{background:var(--card);color:var(--pri);border:1px solid var(--bd);box-shadow:none}.btn.ghost:hover{background:var(--field);filter:none}
+.btn.ghost.danger{color:var(--danger);border-color:#e0b4b0}
+.row{display:flex;align-items:center;gap:8px;padding:12px 0;border-top:1px solid var(--bd);flex-wrap:wrap}
+.row:first-child{border-top:0}
+.num{font-size:13px;font-weight:600;min-width:62px;color:var(--mut)}
+.info{flex:1;min-width:130px}.info b{font-size:19px;font-weight:700;letter-spacing:-.01em;line-height:1.2;display:block}.info .cid{display:block;font-size:15.5px;font-weight:500;color:#33405a}.info small{color:var(--mut);display:block;margin-top:2px;font-size:12.5px}
+.tag{font-size:12px;font-weight:600;padding:3px 10px;border-radius:6px}
+.tag.s{background:var(--sepbg);color:var(--sep)}.tag.w{background:var(--waitbg);color:var(--wait)}.tag.r{background:var(--okbg);color:var(--ok)}
+h3{margin:2px 0 12px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)}
+.tv{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;height:calc(100vh - 32px);overflow:hidden}
+body.tvmode .ptitle,body.tvmode .tabs{display:none}body.tvmode .top{display:block}
+body.tvmode{overflow:hidden}
+body.tvmode main.full{height:100vh;overflow:hidden}
+main.full{max-width:none;padding:16px}
+.tvbar{position:fixed;right:10px;bottom:10px;display:flex;gap:6px;z-index:9;opacity:.45}.tvbar:hover{opacity:1}
+@media(max-width:820px){.tv{grid-template-columns:1fr;height:auto}.tv .col{min-height:180px}}
+.tv .col{border-radius:16px;padding:clamp(12px,1.2vw,20px);overflow:hidden;border:1px solid rgba(20,30,70,.09);box-shadow:0 8px 24px rgba(20,30,70,.08)}
+.tv h2{display:flex;align-items:center;gap:9px;margin:0 0 14px;font-size:clamp(16px,1.55vw,27px);letter-spacing:-.02em}
+.tv-count{display:inline-flex;align-items:center;justify-content:center;min-width:30px;height:30px;padding:0 8px;border-radius:50%;font-size:14px;font-weight:800;line-height:1;background:rgba(255,255,255,.82);box-shadow:inset 0 0 0 1px rgba(20,30,70,.08);margin-left:auto}
+.tv .col.s .tv-count{color:var(--sep)}.tv .col.p .tv-count{color:var(--wait)}.tv .col.r .tv-count{color:var(--ok)}
+.tv .col{display:flex;flex-direction:column;min-height:0}
+.tv .chips{flex:1;min-height:0;overflow-y:auto;scrollbar-width:none}
+.tv .chips::-webkit-scrollbar{display:none}
+.tv .col.s{background:var(--sepbg)}.tv .col.p{background:var(--waitbg)}.tv .col.r{background:var(--okbg)}
+.tv h2{margin:0 0 16px;font-size:clamp(18px,1.8vw,30px);font-weight:700;letter-spacing:.02em;text-transform:uppercase}.tv-page{float:right;font-size:12px;font-weight:600;letter-spacing:0;text-transform:none;opacity:.75}
+.tv .col.s h2{color:var(--sep)}.tv .col.p h2{color:var(--wait)}.tv .col.r h2{color:var(--ok)}
+.chips{display:flex;flex-direction:column;gap:10px;overflow:hidden}
+.chip{background:rgba(255,255,255,.94);border:1px solid rgba(20,30,70,.06);border-radius:11px;padding:10px 13px;text-align:left;line-height:1.12;box-shadow:0 3px 10px rgba(20,30,70,.07)}
+.chip .cn{display:block;font-size:clamp(13px,1.1vw,20px);font-weight:600;color:var(--mut)}
+.chip .nm{display:block;font-size:clamp(19px,1.9vw,36px);font-weight:700;letter-spacing:-.02em;margin-top:3px}
+.chip .ct{display:block;font-size:clamp(14px,1.35vw,24px);font-weight:500;color:#33405a;margin-top:3px}
+.chip .ob{display:block;font-size:clamp(12px,1.1vw,19px);font-style:italic;color:var(--mut);margin-top:5px}
+.col.r .chip .nm{color:var(--ok)}
+.flash{animation:fl 1s ease-in-out 8}
+.flash .cn,.flash .nm,.flash .ct,.flash .ob{animation:flt 1s ease-in-out 8}
+@keyframes fl{50%{background:var(--ok)}}
+@keyframes flt{50%{color:#fff}}
+.big{font-size:clamp(26px,7vw,42px);font-weight:700;text-align:center;margin:16px 0 4px}
+.msg{text-align:center;color:var(--mut)}
+.empty{color:var(--mut);font-size:14px;padding:8px 0}
+.err{color:var(--danger);font-size:14px;margin:4px 0 8px}
+
+/* Refinamento visual do Telão */
+body.tvmode{background:#263b63;color:#eef3fa}
+body.tvmode main.full{height:calc(100vh - 88px);padding:clamp(12px,1.6vw,24px)}
+body.tvmode .tv{gap:clamp(10px,1.1vw,18px);height:100%;align-items:stretch}
+body.tvmode .tv .col{position:relative;min-width:0;border:3px solid transparent;border-radius:20px;padding:clamp(15px,1.5vw,24px);background-clip:padding-box,border-box;box-shadow:0 10px 28px rgba(42,64,92,.14)}
+body.tvmode .tv .col.p{background:linear-gradient(#eee2c5,#eee2c5) padding-box,linear-gradient(135deg,#ffe28a,#d99b25) border-box}
+body.tvmode .tv .col.s{background:linear-gradient(#c8dcef,#c8dcef) padding-box,linear-gradient(135deg,#a8dcff,#3878c7) border-box}
+body.tvmode .tv .col.r{background:linear-gradient(#c4e0d0,#c4e0d0) padding-box,linear-gradient(135deg,#a6edc5,#328b62) border-box}
+body.tvmode .tv h2{font-size:clamp(16px,1.55vw,27px);font-weight:750;letter-spacing:-.035em;text-transform:none;color:#26354a!important;margin:0 0 15px;padding-bottom:13px;border-bottom:1px solid rgba(38,53,74,.12)}
+body.tvmode .tv-page{font-size:12px;color:#52647b;opacity:.9;margin-left:3px}
+body.tvmode .tv-count{min-width:33px;height:33px;background:rgba(255,255,255,.82);color:#26354a!important;box-shadow:inset 0 0 0 1px rgba(38,53,74,.10);font-size:14px}
+body.tvmode .chips{gap:11px}
+body.tvmode .chip{background:rgba(235,241,248,.92);border:1px solid #cbd7e6;border-radius:14px;padding:clamp(12px,1.1vw,17px) clamp(13px,1.15vw,19px);box-shadow:0 4px 12px rgba(42,64,92,.08)}
+body.tvmode .chip .cn{font-size:clamp(12px,1vw,17px);font-weight:700;color:#68788d;letter-spacing:.02em}
+body.tvmode .chip .nm{font-size:clamp(20px,1.95vw,35px);line-height:1.12;color:#172b45;overflow-wrap:anywhere}
+body.tvmode .chip .ct{font-size:clamp(14px,1.3vw,23px);color:#455a72}
+body.tvmode .chip .ob{font-size:clamp(12px,1.05vw,18px);color:#697b91}
+body.tvmode .col.r .chip .nm{color:#176747}
+body.tvmode header{padding:8px 16px;background:#1d2d4d;border-bottom:4px solid #526d99;box-shadow:0 3px 12px rgba(0,0,0,.2)}body.tvmode .brand img{height:54px;width:54px}body.tvmode .brand b{font-size:clamp(20px,2vw,30px)}body.tvmode .tvbar{opacity:.22;transition:opacity .2s}
+body.tvmode .tvbar:hover{opacity:1}
+body.tvmode .tvbar .btn{border:1px solid #d8e2ee;background:#fff;color:#344760;box-shadow:0 4px 14px rgba(42,64,92,.12)}
+@media(max-width:820px){body.tvmode .tv{grid-template-columns:1fr;height:auto;overflow:auto}body.tvmode .tv .col{min-height:220px}}
+</style>
+</head>
+<body>
+<div class="top">
+<header>
+  <div class="brand"><img class="lg" alt="Logo Atacadão Pefisa"><b>Atacadão Pefisa</b></div>
+</header>
+</div>
+<div class="ptitle"><h1 id="ptitle">Gerenciamento de Pedidos</h1><span id="account"></span></div>
+<div class="tabs"><nav id="nav"></nav></div>
+<main id="app"></main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.0/dist/umd/supabase.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+if (top !== self) { document.body.innerHTML = ""; throw new Error("blocked"); }
+document.querySelectorAll("img.lg").forEach(i => i.src = document.querySelector('link[rel=icon]').href);
+const SB_URL = "https://fgdqkflpirqrelhixpvn.supabase.co";
+const SB_KEY = "sb_publishable_jO5dg7oBFxvup4SJUbaIAQ_PFNDFBlS";
+const sb = supabase.createClient(SB_URL, SB_KEY);
+
+let session = null, orders = [], chan = null, soundOn = false, actx = null, autoZap = true, loginErr = "", cRes = null;
+let equipeAtual = null, conferencias = {};
+let view = location.hash === "#consulta" ? "consulta" : location.hash === "#telao" ? "telao" : "balcao";
+let pdfMsg = "", pdfTxt = "";
+let hf = {q:"", st:"todos", per:"hoje"}, lastCall = {}, flashIds = {};
+let tvPage = {p:0,s:0,r:0}, tvPageChangedAt = 0;
+const STL = {preparando:"Pendente", separando:"Separando", pronto:"Pronto", retirado:"Retirado", cancelado:"Cancelado"};
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const T = v => v ? new Date(v).getTime() : null;
+const hora = t => t ? new Date(t).toLocaleTimeString("pt-BR", {hour:"2-digit", minute:"2-digit"}) : "";
+const dia = t => t ? new Date(t).toLocaleDateString("pt-BR") : "";
+const norm = r => ({id:r.id, numero:r.numero, cliente:r.cliente, cidade:r.cidade, telefone:r.telefone, status:r.status,
+  obs:r.observacoes, createdAt:T(r.created_at), sepAt:T(r.separando_at), readyAt:T(r.ready_at), calledAt:T(r.called_at), pickedAt:T(r.picked_at), zapAt:T(r.zap_at)});
+
+/* ---------- dados ---------- */
+async function load(){
+  const since = new Date(Date.now() - 30*864e5).toISOString();
+  const {data, error} = await sb.from("pedidos").select("*").gte("created_at", since).order("created_at", {ascending:false}).limit(2000);
+  if (error) return;
+  orders = data.map(norm);
+  if (equipeAtual?.perfil === "conferente") {
+    const {data: confs} = await sb.from("pedido_conferencias").select("*");
+    conferencias = Object.fromEntries((confs || []).map(c => [c.pedido_id, c]));
+  }
+  data.forEach(r => { if (r.called_at && lastCall[r.id] === undefined) lastCall[r.id] = T(r.called_at); });
+  render();
+}
+function subscribe(){
+  if (chan) return;
+  chan = sb.channel("pedidos").on("postgres_changes", {event:"*", schema:"public", table:"pedidos"}, p => {
+    if (p.eventType === "DELETE") orders = orders.filter(o => o.id !== p.old.id);
+    else {
+      const o = norm(p.new), i = orders.findIndex(x => x.id === o.id);
+      if (i >= 0) orders[i] = o; else orders.unshift(o);
+      if (o.status === "pronto" && o.calledAt && lastCall[o.id] !== o.calledAt) {
+        lastCall[o.id] = o.calledAt; flashIds[o.id] = Date.now() + 8000; if (view === "telao") beep();
+      }
+    }
+    render();
+  }).subscribe();
+}
+async function upd(id, patch){
+  const {error} = await sb.from("pedidos").update(patch).eq("id", id);
+  if (error) alert("Não foi possível salvar: " + error.message);
+}
+const byId = id => orders.find(x => x.id === id);
+
+/* ---------- importar nota (PDF) ---------- */
+function titulo(v){
+  v = (v || "").trim(); if (!v || v !== v.toUpperCase()) return v;
+  return v.toLowerCase().replace(/(^|\s)(\S)/g, (m, a, b) => a + b.toUpperCase()).replace(/\s(De|Da|Do|Das|Dos|E)\s/g, x => x.toLowerCase());
+}
+function extrairNota(t){
+  const pick = rs => { for (const r of rs) { const m = t.match(r); if (m && m[1]) return m[1].trim(); } return ""; };
+  const fim = "(?=\\s+(?:cpf|cnpj|cidade|munic[íi]pio|fone|telefone|tel|celular|whats|endere[çc]o|bairro|cep|ie|rg|uf|data|vendedor)\\b|\\n|$)";
+  const numero = pick([/(?:pedido|or[çc]amento|venda)\s*(?:n[ºo°.]*)?\s*[:#-]?\s*(\d{1,10})/i, /\bn[ºo°.]\s*[:#-]?\s*(\d{3,10})/i]);
+  const cliente = pick([new RegExp("(?:cliente|nome(?:\\s+do\\s+cliente)?|raz[ãa]o\\s+social|destinat[áa]rio)\\s*[:\\-]\\s*([^\\n]+?)" + fim, "i")]);
+  const cidade = pick([/(?:cidade|munic[íi]pio)\s*[:\-]\s*([^\n/]+?)(?=\s*(?:\/|\s-\s|\s+(?:uf|cep|bairro|fone|telefone|estado|cliente)\b|\n|$))/i]);
+  const sec = t.slice(Math.max(0, t.search(/cliente/i)));
+  const tel = (() => { for (const r of [/(?:celular|whats(?:app)?|telefone|fone|tel)\s*[:\-]?\s*(\(?\d{2}\)?\s*9\d{4}[-\s]?\d{4})/i, /(\(?\d{2}\)?\s*9\d{4}[-\s]?\d{4})/, /(?:telefone|fone|tel)\s*[:\-]?\s*(\(?\d{2}\)?\s*\d{4}[-\s]?\d{4})/i]) { const m = sec.match(r); if (m && m[1]) return m[1].trim(); } return ""; })();
+  const obs = pick([/(?:observa[çc][õo]es?|obs\.?)\s*[:\-]\s*([^\n]+)/i]);
+  return {numero, cliente: titulo(cliente), cidade: titulo(cidade), telefone: tel, obs};
+}
+function pdfBox(){
+  return pdfMsg + (pdfTxt ? `<details style="margin-top:8px"><summary style="cursor:pointer;color:var(--mut);font-size:13px">Ver texto lido do PDF</summary><pre style="white-space:pre-wrap;font-size:12px;max-height:200px;overflow:auto">${esc(pdfTxt)}</pre></details>` : "");
+}
+async function lerPdf(file){
+  if (!file) return;
+  const show = m => { pdfMsg = `<div class="msg" style="text-align:left">${m}</div>`; const e = $("#pdfmsg"); if (e) e.innerHTML = pdfBox(); };
+  pdfTxt = ""; show("Lendo a nota…");
+  try {
+    pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+    const doc = await pdfjsLib.getDocument({data: await file.arrayBuffer()}).promise;
+    const linhas = [];
+    for (let n = 1; n <= doc.numPages; n++) {
+      const tc = await (await doc.getPage(n)).getTextContent(), rows = {};
+      tc.items.forEach(it => { const y = Math.round(it.transform[5] / 3); (rows[y] = rows[y] || []).push(it); });
+      Object.keys(rows).map(Number).sort((a,b) => b - a).forEach(y =>
+        linhas.push(rows[y].sort((a,b) => a.transform[4] - b.transform[4]).map(i => i.str).join(" ").replace(/\s+/g, " ").trim()));
+    }
+    pdfTxt = linhas.filter(Boolean).join("\n");
+    if (pdfTxt.length < 20) { pdfTxt = ""; show("Não encontrei texto neste PDF (parece uma imagem escaneada). Preencha os dados manualmente."); return; }
+    const d = extrairNota(pdfTxt), map = {fn:d.numero, fc:d.cliente, fd:d.cidade, ft:d.telefone, fo:d.obs};
+    Object.entries(map).forEach(([id, v]) => { if (v && $("#"+id)) $("#"+id).value = v; });
+    const falt = [["Nº do pedido", d.numero], ["Nome", d.cliente], ["Cidade", d.cidade], ["Telefone", d.telefone]].filter(x => !x[1]).map(x => x[0]);
+    show("✅ Dados preenchidos abaixo. Confira e toque em <b>Adicionar à fila</b>." + (falt.length ? "<br>Não encontrei: " + falt.join(", ") + "." : ""));
+  } catch (e) { show("Não consegui ler este PDF. Preencha manualmente."); }
+}
+
+async function addOrder(){
+  const n = $("#fn").value.trim(), nome = $("#fc").value.trim(), cid = $("#fd").value.trim(), tel = $("#ft").value.trim(), obs = $("#fo").value.trim();
+  if (!n) { $("#fn").focus(); return; }
+  const {error} = await sb.from("pedidos").insert({numero:n, cliente:nome || null, cidade:cid || null, telefone:tel || null, observacoes:obs || null});
+  if (error) {
+    alert(error.code === "23505" ? "Já existe um pedido ativo com o número " + n + "." :
+          error.code === "42501" ? "Seu e-mail não está autorizado a cadastrar pedidos." : "Erro: " + error.message);
+    return;
+  }
+  ["#fn","#fc","#fd","#ft","#fo"].forEach(s => $(s).value = ""); $("#fn").focus();
+}
+function setReady(id){
+  const o = byId(id); if (!o) return;
+  const z = autoZap && o.telefone ? zapUrl(o) : "";
+  if (z) window.open(z, "_blank", "noopener,noreferrer");
+  const now = new Date().toISOString();
+  upd(id, {status:"pronto", ready_at:now, called_at:now, zap_at: z ? now : (o.zapAt ? new Date(o.zapAt).toISOString() : null)});
+}
+const recall = id => upd(id, {called_at:new Date().toISOString()});
+const finish = id => upd(id, {status:"retirado", picked_at:new Date().toISOString()});
+const separar = id => upd(id, {status:"separando", separando_at:new Date().toISOString()});
+const back = id => upd(id, {status:"separando", ready_at:null, called_at:null});
+const reopen = id => upd(id, {status:"preparando", separando_at:null, ready_at:null, called_at:null, picked_at:null, canceled_at:null});
+function cancelOrder(id){ const o = byId(id); if (o && confirm("Cancelar pedido " + o.numero + "?")) upd(id, {status:"cancelado", canceled_at:new Date().toISOString()}); }
+
+function zapUrl(o){
+  let t = String(o.telefone || "").replace(/\D/g, ""); if (!t) return "";
+  if (!t.startsWith("55")) t = "55" + t;
+  const txt = encodeURIComponent("Olá" + (o.cliente ? ", " + o.cliente : "") + "! Seu pedido " + o.numero + " está pronto para retirada no Atacadão Pefisa.");
+  return `https://wa.me/${t}?text=${txt}`;
+}
+const zap = o => { const u = zapUrl(o); return u ? `<a class="btn ghost" style="text-decoration:none" target="_blank" rel="noopener noreferrer" href="${esc(u)}">WhatsApp</a>` : ""; };
+
+function beep(){
+  if (!soundOn || !actx) return;
+  [880, 1175, 880].forEach((f, i) => {
+    const o = actx.createOscillator(), g = actx.createGain();
+    o.frequency.value = f; o.connect(g); g.connect(actx.destination);
+    const t = actx.currentTime + i * 0.28;
+    g.gain.setValueAtTime(0.25, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.25);
+    o.start(t); o.stop(t + 0.26);
+  });
+}
+function toggleFs(){ try { document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen(); } catch (e) {} }
+function enableSound(){ try { actx = actx || new (window.AudioContext || window.webkitAudioContext)(); actx.resume(); soundOn = true; beep(); } catch (e) {} render(); }
+
+/* ---------- login ---------- */
+async function login(){
+  loginErr = "";
+  const {error} = await sb.auth.signInWithPassword({email:$("#em").value.trim(), password:$("#pw").value});
+  if (error) { loginErr = "E-mail ou senha incorretos."; render(); }
+}
+const logout = () => sb.auth.signOut();
+async function carregarEquipe(user){
+  equipeAtual = null;
+  if (!user?.email) return;
+  const {data, error} = await sb.rpc("meu_perfil_equipe");
+  if (session?.user?.id !== user.id) return;
+  if (error) { loginErr = "Login realizado, mas não foi possível carregar seu perfil. Verifique se seu e-mail está cadastrado na equipe."; render(); console.warn("Falha ao carregar perfil:", error.message); return; }
+  equipeAtual = Array.isArray(data) ? (data[0] || null) : (data || null);
+  if (equipeAtual?.perfil === "conferente") await load();
+}
+sb.auth.onAuthStateChange((ev, s) => {
+  session = s;
+  equipeAtual = null;
+  if (s) {
+    load();
+    subscribe();
+    Promise.resolve().then(() => carregarEquipe(s.user).then(() => render()));
+  } else {
+    orders = [];
+    if (chan) { sb.removeChannel(chan); chan = null; }
+  }
+  render();
+});
+
+/* ---------- telas ---------- */
+function vLogin(){
+  return `<div class="card"><h3>Acesso</h3>
+    <input id="em" type="email" placeholder="E-mail" autocomplete="username">
+    <input id="pw" type="password" placeholder="Senha" autocomplete="current-password" onkeydown="if(event.key==='Enter')login()">
+    ${loginErr ? `<div class="err">${loginErr}</div>` : ""}
+    <button class="btn" style="width:100%" onclick="login()">Entrar</button></div>`;
+}
+async function salvarConferencia(id, status){
+  const o = byId(id); if (!o || equipeAtual?.perfil !== "conferente") return;
+  const obs = ($("#confobs-"+id)?.value || "").trim();
+  const atual = conferencias[id] || {};
+  const payload = {pedido_id:id, status, observacoes:obs || null, atualizado_em:new Date().toISOString()};
+  if (status === "conferido") { payload.conferido_por=session.user.id; payload.conferido_em=new Date().toISOString(); }
+  if (status === "entregue") { payload.entregue_por=session.user.id; payload.entregue_em=new Date().toISOString(); }
+  const {data,error}=await sb.from("pedido_conferencias").upsert(payload,{onConflict:"pedido_id"}).select().single();
+  if(error){alert("Não foi possível salvar a conferência: "+error.message);return;}
+  conferencias[id]=data; render();
+}
+function vConferente(){
+  const lista=orders.filter(o=>o.status!=="cancelado").sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+  return `<div class="card"><h3>Conferência de pedidos</h3><p>Consulte os pedidos, registre observações e marque a conferência ou a entrega. Esta tela não permite criar, cancelar, reabrir ou editar os dados do pedido.</p></div>
+  ${lista.map(o=>{const c=conferencias[o.id]||{};const st=c.status||"pendente";return `<div class="card">
+    <div class="num">Pedido Nº ${esc(o.numero)}</div><div class="info"><b>${esc(o.cliente)||"Sem nome"}</b>${o.cidade?`<span class="cid">${esc(o.cidade)}</span>`:""}<small>Status do pedido: ${esc(STL[o.status]||o.status)} · Conferência: ${st==="entregue"?"Entregue":st==="conferido"?"Conferido":"Pendente"}</small></div>
+    <textarea id="confobs-${o.id}" placeholder="Observações da conferência" rows="2">${esc(c.observacoes||"")}</textarea>
+    <div class="actions"><button class="btn fin" onclick="salvarConferencia('${o.id}','conferido')" ${st!=="pendente"?"disabled":""}>Marcar conferido</button><button class="btn ok" onclick="salvarConferencia('${o.id}','entregue')" ${st==="entregue"?"disabled":""}>Marcar entregue</button></div>
+  </div>`}).join("")||'<div class="card empty">Nenhum pedido disponível.</div>'}`;
+}
+function vBalcao(){
+  const prep = orders.filter(o => o.status === "preparando").sort((a,b) => a.createdAt - b.createdAt);
+  const sep = orders.filter(o => o.status === "separando").sort((a,b) => (a.sepAt || 0) - (b.sepAt || 0));
+  const pr = orders.filter(o => o.status === "pronto").sort((a,b) => b.readyAt - a.readyAt);
+  const line = (o, m) => `<div class="row">
+    <div class="num">Nº ${esc(o.numero)}</div>
+    <div class="info"><b>${esc(o.cliente) || "Sem nome"}</b>${o.cidade ? `<span class="cid">${esc(o.cidade)}</span>` : ""}${o.obs ? `<span class="obs">📝 ${esc(o.obs)}</span>` : ""}<small>${m === 2 ? "Pronto às " + hora(o.readyAt) : m === 1 ? "Separando desde " + hora(o.sepAt) : "Entrou às " + hora(o.createdAt)}</small></div>
+    ${m === 2
+      ? `<button class="btn ghost" onclick="recall('${o.id}')">🔔 Chamar</button>${zap(o)}<button class="btn ok" onclick="finish('${o.id}')">Retirar</button><button class="btn ghost" onclick="back('${o.id}')">↩</button>`
+      : m === 1
+      ? `<button class="btn fin" onclick="setReady('${o.id}')">Finalizar ✓</button><button class="btn ghost danger" onclick="cancelOrder('${o.id}')">✕</button>`
+      : `<button class="btn sepb" onclick="separar('${o.id}')">Separar ▶</button><button class="btn ghost danger" onclick="cancelOrder('${o.id}')">✕</button>`}
+  </div>`;
+  return `<div class="card"><h3>Importar nota do pedido (PDF)</h3>
+    <input type="file" id="pdf" accept="application/pdf" onchange="lerPdf(this.files[0])">
+    <div id="pdfmsg">${pdfBox()}</div></div>
+  <div class="card"><h3>Novo pedido</h3>
+    <input id="fn" placeholder="Nº do pedido" autocomplete="off">
+    <input id="fc" placeholder="Nome completo do cliente (com sobrenome)" autocomplete="off">
+    <input id="fd" placeholder="Cidade" autocomplete="off">
+    <input id="ft" placeholder="WhatsApp com DDD (opcional)" inputmode="tel" autocomplete="off">
+    <input id="fo" placeholder="Observações (opcional)" autocomplete="off">
+    <label style="display:flex;gap:8px;align-items:center;font-size:14px;margin:4px 0 10px"><input type="checkbox" style="width:auto;margin:0" ${autoZap ? "checked" : ""} onchange="autoZap=this.checked"> Abrir WhatsApp com a mensagem ao marcar “Pronto”</label>
+    <button class="btn" style="width:100%" onclick="addOrder()">Adicionar à fila</button></div>
+  <div class="card"><h3>Pendentes (${prep.length})</h3>${prep.map(o => line(o,0)).join("") || '<div class="empty">Nenhum pedido pendente.</div>'}</div>
+  <div class="card"><h3>Separando (${sep.length})</h3>${sep.map(o => line(o,1)).join("") || '<div class="empty">Nenhum pedido sendo separado.</div>'}</div>
+  <div class="card"><h3>Prontos para retirada (${pr.length})</h3>${pr.map(o => line(o,2)).join("") || '<div class="empty">Nenhum pedido pronto.</div>'}</div>`;
+}
+function vTelao(){
+  const prep = orders.filter(o => o.status === "preparando").sort((a,b) => a.createdAt - b.createdAt);
+  const pr = orders.filter(o => o.status === "pronto").sort((a,b) => b.readyAt - a.readyAt);
+  const sep = orders.filter(o => o.status === "separando").sort((a,b) => (a.sepAt || 0) - (b.sepAt || 0));
+  const now = Date.now(), perPage = 5;
+  const page = (list, key) => {
+    const pages = Math.max(1, Math.ceil(list.length / perPage));
+    tvPage[key] = tvPage[key] % pages;
+    return {items:list.slice(tvPage[key] * perPage, (tvPage[key] + 1) * perPage), pages};
+  };
+  const P = {p:page(prep,"p"), s:page(sep,"s"), r:page(pr,"r")};
+  const chip = (o, f) => `<div class="chip ${f && flashIds[o.id] > now ? "flash" : ""}"><span class="cn">Nº ${esc(o.numero)}</span><b class="nm">${esc(o.cliente) || "Sem nome"}</b>${o.cidade ? `<span class="ct">${esc(o.cidade)}</span>` : ""}${o.obs ? `<span class="ob">📝 ${esc(o.obs)}</span>` : ""}</div>`;
+  const pageLabel = x => x.pages > 1 ? `<span class="tv-page">${tvPage[x===P.p?"p":x===P.s?"s":"r"]+1}/${x.pages}</span>` : "";
+  return `<div class="tvbar">${soundOn ? "" : '<button class="btn" onclick="enableSound()">🔊 Ativar som</button>'}<button class="btn ghost" onclick="toggleFs()">⛶ Tela cheia</button><button class="btn ghost" onclick="view='balcao';render()">✕ Sair</button></div>
+  <div class="tv">
+    <div class="col p"><h2>⏳ Pendente <span class="tv-count" aria-label="${prep.length} pedidos">${prep.length}</span>${pageLabel(P.p)}</h2><div class="chips tv-fade" key="${tvPage.p}">${P.p.items.map(o => chip(o,false)).join("") || '<span class="empty">—</span>'}</div></div>
+    <div class="col s"><h2>📦 Separando <span class="tv-count" aria-label="${sep.length} pedidos">${sep.length}</span>${pageLabel(P.s)}</h2><div class="chips tv-fade" key="${tvPage.s}">${P.s.items.map(o => chip(o,false)).join("") || '<span class="empty">—</span>'}</div></div>
+    <div class="col r"><h2>✅ Pronto para retirada <span class="tv-count" aria-label="${pr.length} pedidos">${pr.length}</span>${pageLabel(P.r)}</h2><div class="chips tv-fade" key="${tvPage.r}">${P.r.items.map(o => chip(o,true)).join("") || '<span class="empty">—</span>'}</div></div>
+  </div>`;
+}
+function vConsulta(){
+  return `<div class="card"><h3>Consultar pedido</h3>
+    <input id="q" placeholder="Nº do pedido ou telefone com DDD" autocomplete="off" onkeydown="if(event.key==='Enter')consultar()">
+    <button class="btn" style="width:100%" onclick="consultar()">Consultar</button>
+    <div id="res">${cRes || ""}</div></div>`;
+}
+function cCard(o){
+  const ola = o.cliente ? `Olá, <b>${esc(o.cliente)}</b>! ` : "", n = esc(o.numero);
+  const [cor, big, txt] = o.status === "pronto" ? ["var(--ok)", "✅ O seu pedido já pode ser retirado", `Pedido ${n}. É só ir ao balcão.`]
+    : o.status === "separando" ? ["var(--sep)", "📦 Separando", `Pedido ${n}. Estamos separando seus produtos.`]
+    : o.status === "preparando" ? ["var(--wait)", "⏳ Pendente", `Pedido ${n}. Está na fila para separação.`]
+    : o.status === "retirado" ? ["var(--mut)", "Já retirado", `Pedido ${n} foi retirado às ${hora(T(o.picked_at))}.`]
+    : ["var(--mut)", "Cancelado", `Pedido ${n} foi cancelado.`];
+  return `<div class="big" style="color:${cor}">${big}</div><div class="msg">${ola}${txt}</div>`;
+}
+async function consultar(){
+  const q = $("#q").value.trim(); if (!q) return;
+  const {data, error} = await sb.rpc("consultar_pedido", {p_busca:q});
+  cRes = error ? `<div class="msg">${error.message && error.message.includes("Muitas consultas") ? "Muitas consultas seguidas. Aguarde um minuto e tente de novo." : "Erro ao consultar. Tente novamente."}</div>`
+    : !data || !data.length ? '<div class="msg">Pedido não encontrado. Confira o número ou telefone.</div>'
+    : data.map(cCard).join("<hr>");
+  $("#res").innerHTML = cRes;
+}
+
+function histList(){
+  const n = new Date(), d0 = new Date(n.getFullYear(), n.getMonth(), n.getDate()).getTime();
+  const lim = hf.per === "hoje" ? d0 : hf.per === "7d" ? d0 - 6*864e5 : d0 - 29*864e5;
+  const q = hf.q.toLowerCase();
+  return orders.filter(o => o.createdAt >= lim && (hf.st === "todos" || o.status === hf.st) &&
+    (!q || [o.numero, o.cliente, o.cidade, o.telefone, o.obs].some(v => String(v || "").toLowerCase().includes(q))))
+    .sort((a,b) => b.createdAt - a.createdAt);
+}
+const setHf = (k, v) => { hf[k] = v; render(); };
+const mins = (a, b) => a && b ? Math.round((b - a) / 60000) + " min" : "—";
+function histRows(L){
+  return L.map(o => `<div class="row">
+    <div class="num">Nº ${esc(o.numero)}</div>
+    <div class="info"><b>${esc(o.cliente) || "Sem nome"}</b>${o.cidade ? `<span class="cid">${esc(o.cidade)}</span>` : ""}${o.obs ? `<span class="obs">📝 ${esc(o.obs)}</span>` : ""}
+      <small>${dia(o.createdAt)} ${hora(o.createdAt)}${o.sepAt ? " · separando " + hora(o.sepAt) : ""}${o.readyAt ? " · finalizado " + hora(o.readyAt) + (o.sepAt ? " (separação: " + mins(o.sepAt, o.readyAt) + ")" : "") : ""}${o.pickedAt ? " · retirado " + hora(o.pickedAt) : ""}${o.zapAt ? " · WhatsApp " + hora(o.zapAt) : ""}</small></div>
+    <span class="tag ${o.status === "pronto" || o.status === "retirado" ? "r" : o.status === "separando" ? "s" : "w"}">${STL[o.status]}</span>
+    ${o.status === "retirado" || o.status === "cancelado" ? `<button class="btn ghost" onclick="reopen('${o.id}')">Reabrir</button>` : ""}
+  </div>`).join("") || '<div class="empty">Nenhum pedido neste filtro.</div>';
+}
+function vHistorico(){
+  const L = histList(), cnt = s => L.filter(o => o.status === s).length;
+  const seg = (k, opts) => opts.map(([v, t]) => `<button class="btn ${hf[k] === v ? "" : "ghost"}" style="padding:8px 12px;font-size:14px" onclick="setHf('${k}','${v}')">${t}</button>`).join(" ");
+  return `<div class="card"><h3>Histórico (últimos 30 dias)</h3>
+    <input placeholder="Buscar por nº, nome, cidade, telefone ou observação" value="${esc(hf.q)}" autocomplete="off" oninput="hf.q=this.value;$('#hl').innerHTML=histRows(histList())">
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px">${seg("per", [["hoje","Hoje"],["7d","7 dias"],["30d","30 dias"]])}</div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">${seg("st", [["todos","Todos"],["preparando","Pendentes"],["separando","Separando"],["pronto","Prontos"],["retirado","Retirados"],["cancelado","Cancelados"]])}</div>
+    <div class="msg" style="text-align:left;margin-bottom:6px">${L.length} pedidos · ${cnt("retirado")} retirados · ${cnt("cancelado")} cancelados</div>
+    <button class="btn ghost" onclick="exportCsv()">⬇ Exportar CSV</button></div>
+    <div class="card" id="hl">${histRows(L)}</div>`;
+}
+function exportCsv(){
+  const c = v => '"' + String(v == null ? "" : v).replace(/"/g, '""') + '"';
+  const f = t => t ? new Date(t).toLocaleString("pt-BR") : "";
+  const rows = [["Pedido","Cliente","Cidade","Telefone","Observações","Status","Entrada","Início da separação","Finalizado","Tempo de separação (min)","Retirado","WhatsApp"]].concat(
+    histList().map(o => [o.numero, o.cliente, o.cidade, o.telefone, o.obs, STL[o.status], f(o.createdAt), f(o.sepAt), f(o.readyAt), o.sepAt && o.readyAt ? Math.round((o.readyAt - o.sepAt) / 60000) : "", f(o.pickedAt), f(o.zapAt)]));
+  const blob = new Blob(["\uFEFF" + rows.map(r => r.map(c).join(";")).join("\n")], {type:"text/csv;charset=utf-8"});
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "historico-pedidos-pefisa.csv"; a.click();
+}
+
+function render(){
+  const isConf = session && equipeAtual?.perfil === "conferente";
+  if (isConf && !["conferente","consulta"].includes(view)) view = "conferente";
+  const tabs = isConf ? [["conferente","Conferência"]] : session ? [["balcao","Balcão"],["telao","Telão"],["consulta","Consulta"],["historico","Histórico"]] : [["balcao","Equipe"],["consulta","Consulta"]];
+  const nomeEquipe = equipeAtual?.nome || "";
+  const perfilEquipe = equipeAtual?.perfil || "Equipe";
+  $("#nav").innerHTML = tabs.map(([v,t]) => "<button class=\"" + (view === v ? "on" : "") + "\" onclick=\"view=\'" + v + "\';render()\">" + t + "</button>").join("");
+  const nomePerfil = nomeEquipe || "Equipe"; const iniciais = nomePerfil.trim().split(/\s+/).slice(0,2).map(p => p.charAt(0).toUpperCase()).join("");
+  $("#account").innerHTML = session ? "<span class=\"profile\"><span class=\"profile-avatar\" aria-hidden=\"true\">" + esc(iniciais || "U") + "</span><span>" + esc(nomePerfil) + "</span></span><button class=\"userbadge\" style=\"cursor:pointer\" onclick=\"logout()\">Sair</button>" : "";
+  if (!session && view !== "consulta") view = "balcao";
+  $("#ptitle").textContent = {consulta:"Consulta de Pedidos", historico:"Histórico de Pedidos", conferente:"Conferência de Pedidos"}[view] || "Gerenciamento de Pedidos";
+  const tv = view === "telao" && !!session; document.body.classList.toggle("tvmode", tv); $("#app").className = tv ? "full" : "";
+  const keep = ["fn","fc","fd","ft","fo","q"].map(i => $("#"+i) ? $("#"+i).value : null);
+  const active = document.activeElement && document.activeElement.id;
+  $("#app").innerHTML = view === "consulta" ? vConsulta() : !session ? vLogin() : isConf ? vConferente() :
+    view === "balcao" ? vBalcao() : view === "telao" ? vTelao() : vHistorico();
+  ["fn","fc","fd","ft","fo","q"].forEach((i, k) => { if (keep[k] && $("#"+i)) $("#"+i).value = keep[k]; });
+  if (active && $("#"+active)) $("#"+active).focus();
+}
+let lastAct = Date.now();
+["click","keydown","touchstart","mousemove"].forEach(ev => document.addEventListener(ev, () => { lastAct = Date.now(); }, {passive:true}));
+setInterval(() => { if (session && view !== "telao" && Date.now() - lastAct > 60*60*1000) { logout(); alert("Sessão encerrada por inatividade. Entre novamente."); } }, 60000);
+document.addEventListener("keydown", e => { if (e.key === "Enter" && /^f[ncdto]$/.test(e.target.id || "")) addOrder(); });
+setInterval(() => { if (session && view === "telao") { const keys = ["p","s","r"]; let changed = false; keys.forEach(k => { const total = orders.filter(o => o.status === ({p:"preparando",s:"separando",r:"pronto"}[k])).length; const pages = Math.max(1, Math.ceil(total / 5)); if (pages > 1) { tvPage[k] = (tvPage[k] + 1) % pages; changed = true; } }); if (changed) render(); } }, 5000);
+setInterval(() => { if (session) load(); }, 60000);
+render();
+</script>
+</body>
+</html>
