@@ -23,8 +23,13 @@ nav button.on{background:var(--pri);color:#fff;border-color:var(--pri)}
 .userbadge{display:inline-flex;align-items:center;padding:8px 12px;margin-left:auto;border:1px solid #e1e5ec;border-radius:10px;background:#fff;color:#243247;font-size:13px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(20,35,55,.08)}
 .top{display:contents}
 .tabs{position:sticky;top:0;z-index:5;background:var(--card);border-bottom:1px solid var(--bd);padding:10px 16px;box-shadow:0 2px 6px rgba(20,30,70,.08)}
-.ptitle{max-width:980px;margin:0 auto;padding:14px 16px 8px;display:flex;align-items:center;justify-content:space-between;gap:12px;text-align:left}
-.ptitle h1{margin:0;font-size:22px;font-weight:700;letter-spacing:-.01em;color:var(--pri)}
+.ptitle{max-width:980px;margin:0 auto;padding:14px 16px 10px;position:relative;display:flex;align-items:center;justify-content:center;min-height:64px;text-align:center}
+.ptitle h1{margin:0 auto;font-size:23px;font-weight:700;letter-spacing:-.01em;color:var(--pri);text-align:center}
+#account{position:absolute;right:16px;top:50%;transform:translateY(-50%);display:flex;align-items:center;gap:9px}
+.profile{display:flex;align-items:center;gap:8px;color:var(--tx);font-size:13px;font-weight:600;white-space:nowrap}
+.profile-avatar{width:36px;height:36px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:var(--pri);color:#fff;font-size:13px;font-weight:700;flex:none;border:2px solid #fff;box-shadow:0 0 0 1px var(--bd)}
+.userbadge{display:inline-flex;align-items:center;padding:7px 10px;border:1px solid var(--bd);border-radius:8px;background:#fff;color:var(--pri);font-size:12px;font-weight:700;white-space:nowrap}
+@media(max-width:640px){.ptitle{padding:12px 12px 10px;flex-direction:column;gap:9px}.ptitle h1{font-size:20px}#account{position:static;transform:none;justify-content:center;flex-wrap:wrap}.profile{white-space:normal}}
 .info .obs{display:block;font-size:13px;font-style:italic;color:var(--mut);margin-top:2px}
 main{padding:16px;max-width:980px;margin:0 auto}
 .card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:14px;box-shadow:0 1px 3px rgba(20,30,70,.08)}
@@ -392,7 +397,8 @@ function render(){
   const nomeEquipe = equipeAtual?.nome || session?.user?.email || "";
   const perfilEquipe = equipeAtual?.perfil || "Equipe";
   $("#nav").innerHTML = tabs.map(([v,t]) => "<button class=\"" + (view === v ? "on" : "") + "\" onclick=\"view=\'" + v + "\';render()\">" + t + "</button>").join("");
-  $("#account").innerHTML = session ? "<span class=\"userbadge\">Olá, " + esc(nomeEquipe || "equipe") + "!</span> <button class=\"userbadge\" style=\"cursor:pointer\" onclick=\"logout()\">Sair</button>" : "";
+  const nomePerfil = nomeEquipe || "equipe"; const iniciais = nomePerfil.trim().split(/\s+/).slice(0,2).map(p => p.charAt(0).toUpperCase()).join("");
+  $("#account").innerHTML = session ? "<span class=\"profile\"><span class=\"profile-avatar\" aria-hidden=\"true\">" + esc(iniciais || "U") + "</span><span>" + esc(nomePerfil) + "</span></span><button class=\"userbadge\" style=\"cursor:pointer\" onclick=\"logout()\">Sair</button>" : "";
   if (!session && view !== "consulta") view = "balcao";
   $("#ptitle").textContent = {consulta:"Consulta de Pedidos", historico:"Histórico de Pedidos", conferente:"Conferência de Pedidos"}[view] || "Gerenciamento de Pedidos";
   const tv = view === "telao" && !!session; document.body.classList.toggle("tvmode", tv); $("#app").className = tv ? "full" : "";
