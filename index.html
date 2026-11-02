@@ -58,9 +58,9 @@ main.full{max-width:none;padding:16px}
 .tv h2{display:flex;align-items:center;gap:9px;margin:0 0 14px;font-size:clamp(16px,1.55vw,27px);letter-spacing:-.02em}
 .tv-count{display:inline-flex;align-items:center;justify-content:center;min-width:30px;height:30px;padding:0 8px;border-radius:50%;font-size:14px;font-weight:800;line-height:1;background:rgba(255,255,255,.82);box-shadow:inset 0 0 0 1px rgba(20,30,70,.08);margin-left:auto}
 .tv .col.s .tv-count{color:var(--sep)}.tv .col.p .tv-count{color:var(--wait)}.tv .col.r .tv-count{color:var(--ok)}
-.tv .chips{animation:tvFadeSlide .65s cubic-bezier(.2,.7,.2,1) both}
-@keyframes tvFadeSlide{from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:translateX(0)}}
-@media(prefers-reduced-motion:reduce){.tv .chips{animation:none}}
+.tv .col{display:flex;flex-direction:column;min-height:0}
+.tv .chips{flex:1;min-height:0;overflow-y:auto;scrollbar-width:none;scroll-behavior:smooth}
+.tv .chips::-webkit-scrollbar{display:none}
 .tv .col.s{background:var(--sepbg)}.tv .col.p{background:var(--waitbg)}.tv .col.r{background:var(--okbg)}
 .tv h2{margin:0 0 16px;font-size:clamp(18px,1.8vw,30px);font-weight:700;letter-spacing:.02em;text-transform:uppercase}.tv-page{float:right;font-size:12px;font-weight:600;letter-spacing:0;text-transform:none;opacity:.75}
 .tv .col.s h2{color:var(--sep)}.tv .col.p h2{color:var(--wait)}.tv .col.r h2{color:var(--ok)}
@@ -350,17 +350,13 @@ function vTelao(){
   const prep = orders.filter(o => o.status === "preparando").sort((a,b) => a.createdAt - b.createdAt);
   const pr = orders.filter(o => o.status === "pronto").sort((a,b) => b.readyAt - a.readyAt);
   const sep = orders.filter(o => o.status === "separando").sort((a,b) => (a.sepAt || 0) - (b.sepAt || 0));
-  const now = Date.now(), perPage = 4;
-  const pageCount = list => Math.max(1, Math.ceil(list.length / perPage));
-  const pages = {p:pageCount(prep),s:pageCount(sep),r:pageCount(pr)};
-  const pageSlice = (list,key) => list.slice((tvPage[key] % pages[key]) * perPage, (tvPage[key] % pages[key]) * perPage + perPage);
-  const pageLabel = (list,key) => pages[key] > 1 ? `<small class="tv-page">Página ${(tvPage[key] % pages[key])+1}/${pages[key]}</small>` : "";
+  const now = Date.now();
   const chip = (o, f) => `<div class="chip ${f && flashIds[o.id] > now ? "flash" : ""}"><span class="cn">Nº ${esc(o.numero)}</span><b class="nm">${esc(o.cliente) || "Sem nome"}</b>${o.cidade ? `<span class="ct">${esc(o.cidade)}</span>` : ""}${o.obs ? `<span class="ob">📝 ${esc(o.obs)}</span>` : ""}</div>`;
   return `<div class="tvbar">${soundOn ? "" : '<button class="btn" onclick="enableSound()">🔊 Ativar som</button>'}<button class="btn ghost" onclick="toggleFs()">⛶ Tela cheia</button><button class="btn ghost" onclick="view='balcao';render()">✕ Sair</button></div>
   <div class="tv">
-    <div class="col p"><h2>⏳ Pendente <span class="tv-count" aria-label="${prep.length} pedidos">${prep.length}</span>${pageLabel(prep,"p")}</h2><div class="chips">${pageSlice(prep,"p").map(o => chip(o,false)).join("") || '<span class="empty">—</span>'}</div></div>
-    <div class="col s"><h2>📦 Separando <span class="tv-count" aria-label="${sep.length} pedidos">${sep.length}</span>${pageLabel(sep,"s")}</h2><div class="chips">${pageSlice(sep,"s").map(o => chip(o,false)).join("") || '<span class="empty">—</span>'}</div></div>
-    <div class="col r"><h2>✅ Pronto para retirada <span class="tv-count" aria-label="${pr.length} pedidos">${pr.length}</span>${pageLabel(pr,"r")}</h2><div class="chips">${pageSlice(pr,"r").map(o => chip(o,true)).join("") || '<span class="empty">—</span>'}</div></div>
+    <div class="col p"><h2>⏳ Pendente <span class="tv-count" aria-label="${prep.length} pedidos">${prep.length}</span></h2><div class="chips">${prep.map(o => chip(o,false)).join("") || '<span class="empty">—</span>'}</div></div>
+    <div class="col s"><h2>📦 Separando <span class="tv-count" aria-label="${sep.length} pedidos">${sep.length}</span></h2><div class="chips">${sep.map(o => chip(o,false)).join("") || '<span class="empty">—</span>'}</div></div>
+    <div class="col r"><h2>✅ Pronto para retirada <span class="tv-count" aria-label="${pr.length} pedidos">${pr.length}</span></h2><div class="chips">${pr.map(o => chip(o,true)).join("") || '<span class="empty">—</span>'}</div></div>
   </div>`;
 }
 function vConsulta(){
@@ -449,7 +445,7 @@ let lastAct = Date.now();
 ["click","keydown","touchstart","mousemove"].forEach(ev => document.addEventListener(ev, () => { lastAct = Date.now(); }, {passive:true}));
 setInterval(() => { if (session && view !== "telao" && Date.now() - lastAct > 60*60*1000) { logout(); alert("Sessão encerrada por inatividade. Entre novamente."); } }, 60000);
 document.addEventListener("keydown", e => { if (e.key === "Enter" && /^f[ncdto]$/.test(e.target.id || "")) addOrder(); });
-setInterval(() => { if (session && view === "telao") { if (Date.now() - tvPageChangedAt >= 8000) { ["p","s","r"].forEach(k => tvPage[k]++); tvPageChangedAt = Date.now(); } render(); } }, 4000);
+setInterval(() => { if (session && view === "telao") { document.querySelectorAll(".tv .chips").forEach(el => { const max = el.scrollHeight - el.clientHeight; if (max <= 0) return; if (el.scrollTop >= max - 2) el.scrollTop = 0; else el.scrollTop += 1; }); } }, 35);
 setInterval(() => { if (session) load(); }, 60000);
 render();
 </script>
