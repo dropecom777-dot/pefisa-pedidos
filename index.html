@@ -20,7 +20,7 @@ nav{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;width:100%}
 nav button{border:1px solid var(--bd);background:var(--field);color:var(--pri);padding:9px 16px;border-radius:8px;font-weight:600;font-size:14px;font-family:inherit;cursor:pointer}
 nav button:hover{background:#e6edf8}
 nav button.on{background:var(--pri);color:#fff;border-color:var(--pri)}
-.userbadge{display:inline-flex;align-items:center;padding:8px 12px;border:1px solid rgba(255,255,255,.35);border-radius:8px;background:rgba(255,255,255,.12);color:#fff;font-size:13px;font-weight:600;white-space:nowrap}
+.userbadge{display:inline-flex;align-items:center;padding:8px 12px;margin-left:auto;border:1px solid #e1e5ec;border-radius:10px;background:#fff;color:#243247;font-size:13px;font-weight:700;white-space:nowrap;box-shadow:0 1px 3px rgba(20,35,55,.08)}
 .top{display:contents}
 .tabs{position:sticky;top:0;z-index:5;background:var(--card);border-bottom:1px solid var(--bd);padding:10px 16px;box-shadow:0 2px 6px rgba(20,30,70,.08)}
 .ptitle{max-width:980px;margin:0 auto;padding:18px 16px 0;text-align:center}
@@ -235,7 +235,7 @@ async function carregarEquipe(user){
   if (!user?.email) return;
   const {data, error} = await sb.rpc("meu_perfil_equipe");
   if (session?.user?.id !== user.id) return;
-  if (error) { console.warn("Não foi possível carregar o perfil da equipe."); return; }
+  if (error) { loginErr = "Login realizado, mas não foi possível carregar seu perfil. Verifique se seu e-mail está cadastrado na equipe."; render(); console.warn("Falha ao carregar perfil:", error.message); return; }
   equipeAtual = Array.isArray(data) ? (data[0] || null) : (data || null);
   if (equipeAtual?.perfil === "conferente") await load();
 }
@@ -392,7 +392,7 @@ function render(){
   const nomeEquipe = equipeAtual?.nome || session?.user?.email || "";
   const perfilEquipe = equipeAtual?.perfil || "Equipe";
   $("#nav").innerHTML = tabs.map(([v,t]) => `<button class="${view === v ? "on" : ""}" onclick="view='${v}';render()">${t}</button>`).join("") +
-    (session ? '<span class="userbadge">' + esc(nomeEquipe) + ' · ' + esc(perfilEquipe) + '</span><button onclick="logout()">Sair</button>' : "");
+    (session ? '<span class="userbadge">Olá, ' + esc(nomeEquipe || "equipe") + '!</span><button onclick="logout()">Sair</button>' : "");
   if (!session && view !== "consulta") view = "balcao";
   $("#ptitle").textContent = {consulta:"Consulta de Pedidos", historico:"Histórico de Pedidos", conferente:"Conferência de Pedidos"}[view] || "Gerenciamento de Pedidos";
   const tv = view === "telao" && !!session; document.body.classList.toggle("tvmode", tv); $("#app").className = tv ? "full" : "";
