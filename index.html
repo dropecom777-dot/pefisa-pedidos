@@ -59,7 +59,7 @@ main.full{max-width:none;padding:16px}
 .tv-count{display:inline-flex;align-items:center;justify-content:center;min-width:30px;height:30px;padding:0 8px;border-radius:50%;font-size:14px;font-weight:800;line-height:1;background:rgba(255,255,255,.82);box-shadow:inset 0 0 0 1px rgba(20,30,70,.08);margin-left:auto}
 .tv .col.s .tv-count{color:var(--sep)}.tv .col.p .tv-count{color:var(--wait)}.tv .col.r .tv-count{color:var(--ok)}
 .tv .col{display:flex;flex-direction:column;min-height:0}
-.tv .chips{flex:1;min-height:0;overflow-y:auto;scrollbar-width:none;scroll-behavior:smooth}
+.tv .chips{flex:1;min-height:0;overflow-y:auto;scrollbar-width:none}
 .tv .chips::-webkit-scrollbar{display:none}
 .tv .col.s{background:var(--sepbg)}.tv .col.p{background:var(--waitbg)}.tv .col.r{background:var(--okbg)}
 .tv h2{margin:0 0 16px;font-size:clamp(18px,1.8vw,30px);font-weight:700;letter-spacing:.02em;text-transform:uppercase}.tv-page{float:right;font-size:12px;font-weight:600;letter-spacing:0;text-transform:none;opacity:.75}
@@ -445,7 +445,7 @@ let lastAct = Date.now();
 ["click","keydown","touchstart","mousemove"].forEach(ev => document.addEventListener(ev, () => { lastAct = Date.now(); }, {passive:true}));
 setInterval(() => { if (session && view !== "telao" && Date.now() - lastAct > 60*60*1000) { logout(); alert("Sessão encerrada por inatividade. Entre novamente."); } }, 60000);
 document.addEventListener("keydown", e => { if (e.key === "Enter" && /^f[ncdto]$/.test(e.target.id || "")) addOrder(); });
-setInterval(() => { if (session && view === "telao") { document.querySelectorAll(".tv .chips").forEach(el => { const max = el.scrollHeight - el.clientHeight; if (max <= 0) return; if (el.scrollTop >= max - 2) el.scrollTop = 0; else el.scrollTop += 1; }); } }, 35);
+setInterval(() => { if (session && view === "telao") { document.querySelectorAll(".tv .chips").forEach(el => { const max = el.scrollHeight - el.clientHeight; if (max <= 0) return; if (el.scrollTop >= max - 1) el.scrollTop = 0; else el.scrollTop += 1; }); } }, 45);
 setInterval(() => { if (session) load(); }, 60000);
 render();
 </script>
