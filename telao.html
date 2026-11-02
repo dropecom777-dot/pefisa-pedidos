@@ -102,6 +102,21 @@ body.tvmode header{padding:8px 16px;background:#1d2d4d;border-bottom:4px solid #
 body.tvmode .tvbar:hover{opacity:1}
 body.tvmode .tvbar .btn{border:1px solid #d8e2ee;background:#fff;color:#344760;box-shadow:0 4px 14px rgba(42,64,92,.12)}
 @media(max-width:820px){body.tvmode .tv{grid-template-columns:1fr;height:auto;overflow:auto}body.tvmode .tv .col{min-height:220px}}
+
+/* Ajustes solicitados: sem linha sob a logo, colunas neutras e títulos em faixa cinza */
+body.tvmode header{border-bottom:0}
+body.tvmode .tv .col,
+body.tvmode .tv .col.p,
+body.tvmode .tv .col.s,
+body.tvmode .tv .col.r{background:#f7f8fa;border:1px solid #d8dde5;box-shadow:0 8px 20px rgba(20,30,45,.12)}
+body.tvmode .tv h2{display:flex;align-items:center;justify-content:center;gap:10px;text-align:center;text-transform:uppercase;letter-spacing:.04em;color:#26354a!important;background:#dfe3e8;border:0;border-radius:10px;margin:0 0 15px;padding:14px 12px;font-size:clamp(15px,1.35vw,24px);font-weight:800}
+body.tvmode .tv-count{margin-left:0;background:#fff}
+body.tvmode .tv-page{position:absolute;right:clamp(15px,1.5vw,24px);font-size:11px}
+body.tvmode .tv .chips{padding-top:2px}
+body.tvmode .tv .chip{background:#fff;border:1px solid #e0e4ea;box-shadow:0 3px 9px rgba(20,30,45,.06)}
+body.tvmode .tv .chip .nm{color:#172b45}
+body.tvmode .tv .col.r .chip .nm{color:#172b45}
+
 </style>
 </head>
 <body>
