@@ -88,7 +88,7 @@ const SB_KEY = "sb_publishable_jO5dg7oBFxvup4SJUbaIAQ_PFNDFBlS";
 const sb = supabase.createClient(SB_URL, SB_KEY);
 
 let session = null, orders = [], chan = null, soundOn = false, actx = null, autoZap = true, loginErr = "", cRes = null;
-let equipeAtual = null;
+let equipeAtual = null, conferencias = {};
 let view = location.hash === "#consulta" ? "consulta" : "balcao";
 let pdfMsg = "", pdfTxt = "";
 let hf = {q:"", st:"todos", per:"hoje"}, lastCall = {}, flashIds = {};
@@ -108,6 +108,10 @@ async function load(){
   const {data, error} = await sb.from("pedidos").select("*").gte("created_at", since).order("created_at", {ascending:false}).limit(2000);
   if (error) return;
   orders = data.map(norm);
+  if (equipeAtual?.perfil === "conferente") {
+    const {data: confs} = await sb.from("pedido_conferencias").select("*");
+    conferencias = Object.fromEntries((confs || []).map(c => [c.pedido_id, c]));
+  }
   data.forEach(r => { if (r.called_at && lastCall[r.id] === undefined) lastCall[r.id] = T(r.called_at); });
   render();
 }
@@ -256,6 +260,26 @@ function vLogin(){
     ${loginErr ? `<div class="err">${loginErr}</div>` : ""}
     <button class="btn" style="width:100%" onclick="login()">Entrar</button></div>`;
 }
+async function salvarConferencia(id, status){
+  const o = byId(id); if (!o || equipeAtual?.perfil !== "conferente") return;
+  const obs = ($("#confobs-"+id)?.value || "").trim();
+  const atual = conferencias[id] || {};
+  const payload = {pedido_id:id, status, observacoes:obs || null, atualizado_em:new Date().toISOString()};
+  if (status === "conferido") { payload.conferido_por=session.user.id; payload.conferido_em=new Date().toISOString(); }
+  if (status === "entregue") { payload.entregue_por=session.user.id; payload.entregue_em=new Date().toISOString(); }
+  const {data,error}=await sb.from("pedido_conferencias").upsert(payload,{onConflict:"pedido_id"}).select().single();
+  if(error){alert("Não foi possível salvar a conferência: "+error.message);return;}
+  conferencias[id]=data; render();
+}
+function vConferente(){
+  const lista=orders.filter(o=>o.status!=="cancelado").sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+  return `<div class="card"><h3>Conferência de pedidos</h3><p>Consulte os pedidos, registre observações e marque a conferência ou a entrega. Esta tela não permite criar, cancelar, reabrir ou editar os dados do pedido.</p></div>
+  ${lista.map(o=>{const c=conferencias[o.id]||{};const st=c.status||"pendente";return `<div class="card">
+    <div class="num">Pedido Nº ${esc(o.numero)}</div><div class="info"><b>${esc(o.cliente)||"Sem nome"}</b>${o.cidade?`<span class="cid">${esc(o.cidade)}</span>`:""}<small>Status do pedido: ${esc(STL[o.status]||o.status)} · Conferência: ${st==="entregue"?"Entregue":st==="conferido"?"Conferido":"Pendente"}</small></div>
+    <textarea id="confobs-${o.id}" placeholder="Observações da conferência" rows="2">${esc(c.observacoes||"")}</textarea>
+    <div class="actions"><button class="btn fin" onclick="salvarConferencia('${o.id}','conferido')" ${st!=="pendente"?"disabled":""}>Marcar conferido</button><button class="btn ok" onclick="salvarConferencia('${o.id}','entregue')" ${st==="entregue"?"disabled":""}>Marcar entregue</button></div>
+  </div>`}).join("")||'<div class="card empty">Nenhum pedido disponível.</div>'}`;
+}
 function vBalcao(){
   const prep = orders.filter(o => o.status === "preparando").sort((a,b) => a.createdAt - b.createdAt);
   const sep = orders.filter(o => o.status === "separando").sort((a,b) => (a.sepAt || 0) - (b.sepAt || 0));
@@ -361,17 +385,19 @@ function exportCsv(){
 }
 
 function render(){
-  const tabs = session ? [["balcao","Balcão"],["telao","Telão"],["consulta","Consulta"],["historico","Histórico"]] : [["balcao","Equipe"],["consulta","Consulta"]];
+  const isConf = session && equipeAtual?.perfil === "conferente";
+  if (isConf && !["conferente","consulta"].includes(view)) view = "conferente";
+  const tabs = isConf ? [["conferente","Conferência"]] : session ? [["balcao","Balcão"],["telao","Telão"],["consulta","Consulta"],["historico","Histórico"]] : [["balcao","Equipe"],["consulta","Consulta"]];
   const nomeEquipe = equipeAtual?.nome || session?.user?.email || "";
   const perfilEquipe = equipeAtual?.perfil || "Equipe";
   $("#nav").innerHTML = tabs.map(([v,t]) => `<button class="${view === v ? "on" : ""}" onclick="view='${v}';render()">${t}</button>`).join("") +
     (session ? '<span class="userbadge">' + esc(nomeEquipe) + ' · ' + esc(perfilEquipe) + '</span><button onclick="logout()">Sair</button>' : "");
   if (!session && view !== "consulta") view = "balcao";
-  $("#ptitle").textContent = {consulta:"Consulta de Pedidos", historico:"Histórico de Pedidos"}[view] || "Gerenciamento de Pedidos";
+  $("#ptitle").textContent = {consulta:"Consulta de Pedidos", historico:"Histórico de Pedidos", conferente:"Conferência de Pedidos"}[view] || "Gerenciamento de Pedidos";
   const tv = view === "telao" && !!session; document.body.classList.toggle("tvmode", tv); $("#app").className = tv ? "full" : "";
   const keep = ["fn","fc","fd","ft","fo","q"].map(i => $("#"+i) ? $("#"+i).value : null);
   const active = document.activeElement && document.activeElement.id;
-  $("#app").innerHTML = view === "consulta" ? vConsulta() : !session ? vLogin() :
+  $("#app").innerHTML = view === "consulta" ? vConsulta() : !session ? vLogin() : isConf ? vConferente() :
     view === "balcao" ? vBalcao() : view === "telao" ? vTelao() : vHistorico();
   ["fn","fc","fd","ft","fo","q"].forEach((i, k) => { if (keep[k] && $("#"+i)) $("#"+i).value = keep[k]; });
   if (active && $("#"+active)) $("#"+active).focus();
