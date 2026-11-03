@@ -162,16 +162,17 @@ async function revisarOrtografia(texto){
 }
 
 async function addOrder(){
-  const n = $("#fn").value.trim(), tel = $("#ft").value.trim(), obs = $("#fo").value.trim();
-  let nome = $("#fc").value.trim(), cid = $("#fd").value.trim();
+  const n = $("#fn").value.trim(), tel = $("#ft").value.trim();
+  let nome = $("#fc").value.trim(), cid = $("#fd").value.trim(), obs = $("#fo").value.trim();
   if (!n) { $("#fn").focus(); return; }
   const botao = document.querySelector('[onclick="addOrder()"]');
   if (botao) { botao.disabled = true; botao.textContent = "Revisando…"; }
   try {
-    // Revisão externa somente dos campos nome e cidade; não envia telefone, pedido ou observações.
-    [nome, cid] = await Promise.all([revisarOrtografia(nome), revisarOrtografia(cid)]);
+    // Revisão externa somente de nome, cidade e observações; não envia telefone nem número do pedido.
+    [nome, cid, obs] = await Promise.all([revisarOrtografia(nome), revisarOrtografia(cid), revisarOrtografia(obs)]);
     $("#fc").value = nome;
     $("#fd").value = cid;
+    $("#fo").value = obs;
   } catch (e) {
     alert("Não foi possível revisar nome e cidade. Confira os dados e tente novamente.");
     return;
