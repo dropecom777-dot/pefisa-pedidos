@@ -138,53 +138,10 @@ function formatPhone(input){
   else input.value = d;
 }
 
-async function revisarOrtografia(texto){
-  if (!texto) return texto;
-  const body = new URLSearchParams({text: texto, language: "pt-BR"});
-  const response = await fetch("https://api.languagetool.org/v2/check", {
-    method: "POST",
-    headers: {"Content-Type": "application/x-www-form-urlencoded"},
-    body
-  });
-  if (!response.ok) throw new Error("Falha na revisão ortográfica");
-  const resultado = await response.json();
-  let revisado = texto;
-  // Corrige a grafia conhecida do município sem alterar outros nomes próprios.
-  revisado = revisado.replace(/conce[çc][aã]o\\s+do\\s+almeida/giu, "Conceição do Almeida");
-  // Aplica sugestões únicas de ortografia/gramática, sem escolher entre alternativas ambíguas.
-  const matches = (resultado.matches || [])
-    .filter(m => m.replacements && m.replacements.length === 1 &&
-      m.rule && ["misspelling", "grammar"].includes(m.rule.issueType))
-    .sort((a,b) => b.offset - a.offset);
-  for (const m of matches) {
-    const sugestao = m.replacements[0].value;
-    if (!sugestao || !m.length) continue;
-    revisado = revisado.slice(0, m.offset) + sugestao + revisado.slice(m.offset + m.length);
-  }
-  // Inicia observações com maiúscula após início de texto ou pontuação final.
-  revisado = revisado.replace(/(^|[.!?]\\s+)([\\p{L}])/gu,
-    (m, antes, letra) => antes + letra.toLocaleUpperCase("pt-BR"));
-  return revisado;
-}
-
 async function addOrder(){
   const n = $("#fn").value.trim(), tel = $("#ft").value.trim();
   let nome = $("#fc").value.trim(), cid = $("#fd").value.trim(), obs = $("#fo").value.trim();
   if (!n) { $("#fn").focus(); return; }
-  const botao = document.querySelector('[onclick="addOrder()"]');
-  if (botao) { botao.disabled = true; botao.textContent = "Revisando…"; }
-  try {
-    // Revisão externa somente de nome, cidade e observações; não envia telefone nem número do pedido.
-    [nome, cid, obs] = await Promise.all([revisarOrtografia(nome), revisarOrtografia(cid), revisarOrtografia(obs)]);
-    $("#fc").value = nome;
-    $("#fd").value = cid;
-    $("#fo").value = obs;
-  } catch (e) {
-    alert("Não foi possível revisar nome e cidade. Confira os dados e tente novamente.");
-    return;
-  } finally {
-    if (botao) { botao.disabled = false; botao.textContent = "Adicionar à fila"; }
-  }
   const {error} = await sb.from("pedidos").insert({numero:n, cliente:nome || null, cidade:cid || null, telefone:tel || null, observacoes:obs || null});
   if (error) {
     alert(error.code === "23505" ? "Já existe um pedido ativo com o número " + n + "." :
