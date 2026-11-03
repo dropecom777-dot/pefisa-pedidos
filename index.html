@@ -243,7 +243,7 @@ function vBalcao(){
     <input type="file" id="pdf" accept="application/pdf" onchange="lerPdf(this.files[0])">
     <div id="pdfmsg">${pdfBox()}</div></div>
   <div class="card"><h3>Novo pedido</h3>
-    <input id="fn" placeholder="Nº do pedido" autocomplete="off">
+    <input id="fn" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Nº do pedido" autocomplete="off" oninput="this.value=this.value.replace(/\D/g, '')">
     <input id="fc" placeholder="Nome completo do cliente (com sobrenome)" autocomplete="off" spellcheck="true" lang="pt-BR" autocapitalize="words">
     <input id="fd" placeholder="Cidade" autocomplete="off" spellcheck="true" lang="pt-BR" autocapitalize="words">
     <input id="ft" placeholder="WhatsApp com DDD (opcional)" inputmode="tel" autocomplete="off">
