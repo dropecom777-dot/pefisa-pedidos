@@ -244,8 +244,8 @@ function vBalcao(){
     <div id="pdfmsg">${pdfBox()}</div></div>
   <div class="card"><h3>Novo pedido</h3>
     <input id="fn" placeholder="Nº do pedido" autocomplete="off">
-    <input id="fc" placeholder="Nome completo do cliente (com sobrenome)" autocomplete="off">
-    <input id="fd" placeholder="Cidade" autocomplete="off">
+    <input id="fc" placeholder="Nome completo do cliente (com sobrenome)" autocomplete="off" spellcheck="true" lang="pt-BR" autocapitalize="words">
+    <input id="fd" placeholder="Cidade" autocomplete="off" spellcheck="true" lang="pt-BR" autocapitalize="words">
     <input id="ft" placeholder="WhatsApp com DDD (opcional)" inputmode="tel" autocomplete="off">
     <input id="fo" placeholder="Observações (opcional)" autocomplete="off" spellcheck="true" lang="pt-BR" autocapitalize="sentences">
     <label style="display:flex;gap:8px;align-items:center;font-size:14px;margin:4px 0 10px"><input type="checkbox" style="width:auto;margin:0" ${autoZap ? "checked" : ""} onchange="autoZap=this.checked"> Abrir WhatsApp com a mensagem ao marcar “Pronto”</label>
