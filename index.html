@@ -222,7 +222,7 @@ function vConferente(){
   return `<div class="card"><h3>Conferência de pedidos</h3><p>Consulte os pedidos, registre observações e marque a conferência ou a entrega. Esta tela não permite criar, cancelar, reabrir ou editar os dados do pedido.</p></div>
   ${lista.map(o=>{const c=conferencias[o.id]||{};const st=c.status||"pendente";return `<div class="card">
     <div class="num">Pedido Nº ${esc(o.numero)}</div><div class="info"><b>${esc(o.cliente)||"Sem nome"}</b>${o.cidade?`<span class="cid">${esc(o.cidade)}</span>`:""}<small>Status do pedido: ${esc(STL[o.status]||o.status)} · Conferência: ${st==="entregue"?"Entregue":st==="conferido"?"Conferido":"Pendente"}</small></div>
-    <textarea id="confobs-${o.id}" placeholder="Observações da conferência" rows="2">${esc(c.observacoes||"")}</textarea>
+    <textarea id="confobs-${o.id}" placeholder="Observações da conferência" rows="2" spellcheck="true" lang="pt-BR" autocapitalize="sentences">${esc(c.observacoes||"")}</textarea>
     <div class="actions"><button class="btn fin" onclick="salvarConferencia('${o.id}','conferido')" ${st!=="pendente"?"disabled":""}>Marcar conferido</button><button class="btn ok" onclick="salvarConferencia('${o.id}','entregue')" ${st==="entregue"?"disabled":""}>Marcar entregue</button></div>
   </div>`}).join("")||'<div class="card empty">Nenhum pedido disponível.</div>'}`;
 }
@@ -247,7 +247,7 @@ function vBalcao(){
     <input id="fc" placeholder="Nome completo do cliente (com sobrenome)" autocomplete="off">
     <input id="fd" placeholder="Cidade" autocomplete="off">
     <input id="ft" placeholder="WhatsApp com DDD (opcional)" inputmode="tel" autocomplete="off">
-    <input id="fo" placeholder="Observações (opcional)" autocomplete="off">
+    <input id="fo" placeholder="Observações (opcional)" autocomplete="off" spellcheck="true" lang="pt-BR" autocapitalize="sentences">
     <label style="display:flex;gap:8px;align-items:center;font-size:14px;margin:4px 0 10px"><input type="checkbox" style="width:auto;margin:0" ${autoZap ? "checked" : ""} onchange="autoZap=this.checked"> Abrir WhatsApp com a mensagem ao marcar “Pronto”</label>
     <button class="btn" style="width:100%" onclick="addOrder()">Adicionar à fila</button></div>
   <div class="card"><h3>Pendentes (${prep.length})</h3>${prep.map(o => line(o,0)).join("") || '<div class="empty">Nenhum pedido pendente.</div>'}</div>
