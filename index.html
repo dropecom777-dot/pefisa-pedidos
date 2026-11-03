@@ -33,7 +33,7 @@ const sb = supabase.createClient(SB_URL, SB_KEY);
 
 let session = null, orders = [], chan = null, soundOn = false, actx = null, autoZap = true, loginErr = "", cRes = null;
 let equipeAtual = null, conferencias = {};
-let view = location.hash === "#consulta" ? "consulta" : "balcao";
+let view = "balcao";
 let pdfMsg = "", pdfTxt = "";
 let hf = {q:"", st:"todos", per:"hoje"}, lastCall = {}, flashIds = {};
 let tvPage = {p:0,s:0,r:0}, tvPageChangedAt = 0;
@@ -340,18 +340,18 @@ function exportCsv(){
 function render(){
   const isConf = session && equipeAtual?.perfil === "conferente";
   if (isConf && !["conferente","consulta"].includes(view)) view = "conferente";
-  const tabs = isConf ? [["conferente","Conferência"]] : session ? [["balcao","Balcão"],["telao","Telão"],["consulta","Consulta"],["historico","Histórico"]] : [["balcao","Equipe"],["consulta","Consulta"]];
+  const tabs = isConf ? [["conferente","Conferência"]] : session ? [["balcao","Balcão"],["telao","Telão"],["consulta","Consulta"],["historico","Histórico"]] : [];
   const nomeEquipe = equipeAtual?.nome || "";
   const perfilEquipe = equipeAtual?.perfil || "Equipe";
   $("#nav").innerHTML = tabs.map(([v,t]) => "<button class=\"" + (view === v ? "on" : "") + "\" onclick=\"view=\'" + v + "\';render()\">" + t + "</button>").join("");
   const nomePerfil = nomeEquipe || "Equipe"; const iniciais = nomePerfil.trim().split(/\s+/).slice(0,2).map(p => p.charAt(0).toUpperCase()).join("");
   $("#account").innerHTML = session ? "<span class=\"profile\"><span class=\"profile-avatar\" aria-hidden=\"true\">" + esc(iniciais || "U") + "</span><span>" + esc(nomePerfil) + "</span></span><button class=\"userbadge\" style=\"cursor:pointer\" onclick=\"logout()\">Sair</button>" : "";
-  if (!session && view !== "consulta") view = "balcao";
+  if (!session) view = "balcao";
   $("#ptitle").textContent = {consulta:"Consulta de Pedidos", historico:"Histórico de Pedidos", conferente:"Conferência de Pedidos"}[view] || "Gerenciamento de Pedidos";
   const tv = view === "telao" && !!session; document.body.classList.toggle("tvmode", tv); $("#app").className = tv ? "full" : "";
   const keep = ["fn","fc","fd","ft","fo","q"].map(i => $("#"+i) ? $("#"+i).value : null);
   const active = document.activeElement && document.activeElement.id;
-  $("#app").innerHTML = view === "consulta" ? vConsulta() : !session ? vLogin() : isConf ? vConferente() :
+  $("#app").innerHTML = !session ? vLogin() : view === "consulta" ? vConsulta() : isConf ? vConferente() :
     view === "balcao" ? vBalcao() : view === "telao" ? vTelao() : vHistorico();
   ["fn","fc","fd","ft","fo","q"].forEach((i, k) => { if (keep[k] && $("#"+i)) $("#"+i).value = keep[k]; });
   if (active && $("#"+active)) $("#"+active).focus();
