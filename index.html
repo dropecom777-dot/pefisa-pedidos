@@ -149,15 +149,21 @@ async function revisarOrtografia(texto){
   if (!response.ok) throw new Error("Falha na revisão ortográfica");
   const resultado = await response.json();
   let revisado = texto;
-  // Aplica apenas sugestões inequívocas de erros ortográficos; mantém palavras desconhecidas/apelidos.
+  // Corrige a grafia conhecida do município sem alterar outros nomes próprios.
+  revisado = revisado.replace(/conce[çc][aã]o\\s+do\\s+almeida/giu, "Conceição do Almeida");
+  // Aplica sugestões únicas de ortografia/gramática, sem escolher entre alternativas ambíguas.
   const matches = (resultado.matches || [])
-    .filter(m => m.rule && m.rule.issueType === "misspelling" && m.replacements && m.replacements.length === 1)
+    .filter(m => m.replacements && m.replacements.length === 1 &&
+      m.rule && ["misspelling", "grammar"].includes(m.rule.issueType))
     .sort((a,b) => b.offset - a.offset);
   for (const m of matches) {
     const sugestao = m.replacements[0].value;
     if (!sugestao || !m.length) continue;
     revisado = revisado.slice(0, m.offset) + sugestao + revisado.slice(m.offset + m.length);
   }
+  // Inicia observações com maiúscula após início de texto ou pontuação final.
+  revisado = revisado.replace(/(^|[.!?]\\s+)([\\p{L}])/gu,
+    (m, antes, letra) => antes + letra.toLocaleUpperCase("pt-BR"));
   return revisado;
 }
 
