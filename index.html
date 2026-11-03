@@ -122,6 +122,16 @@ async function lerPdf(file){
   } catch (e) { show("Não consegui ler este PDF. Preencha manualmente."); }
 }
 
+function formatPhone(input){
+  let d = input.value.replace(/\\D/g, "");
+  if (d.startsWith("55") && d.length > 11) d = d.slice(2);
+  d = d.slice(0, 11);
+  if (d.length > 10) input.value = d.replace(/^(\\d{2})(\\d{5})(\\d{0,4}).*/, "($1) $2-$3").replace(/-$/, "");
+  else if (d.length > 6) input.value = d.replace(/^(\\d{2})(\\d{4})(\\d{0,4}).*/, "($1) $2-$3").replace(/-$/, "");
+  else if (d.length > 2) input.value = d.replace(/^(\\d{2})(\\d{0,5})$/, "($1) $2").trim();
+  else input.value = d;
+}
+
 async function addOrder(){
   const n = $("#fn").value.trim(), nome = $("#fc").value.trim(), cid = $("#fd").value.trim(), tel = $("#ft").value.trim(), obs = $("#fo").value.trim();
   if (!n) { $("#fn").focus(); return; }
@@ -246,7 +256,7 @@ function vBalcao(){
     <input id="fn" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Nº do pedido" autocomplete="off" oninput="this.value=this.value.replace(/\D/g, '')">
     <input id="fc" placeholder="Nome completo do cliente (com sobrenome)" autocomplete="off" spellcheck="true" lang="pt-BR" autocapitalize="words">
     <input id="fd" placeholder="Cidade" autocomplete="off" spellcheck="true" lang="pt-BR" autocapitalize="words">
-    <input id="ft" placeholder="WhatsApp com DDD (opcional)" inputmode="tel" autocomplete="off">
+    <input id="ft" type="tel" placeholder="WhatsApp com DDD (opcional)" inputmode="tel" autocomplete="off" oninput="formatPhone(this)">
     <input id="fo" placeholder="Observações (opcional)" autocomplete="off" spellcheck="true" lang="pt-BR" autocapitalize="sentences">
     <label style="display:flex;gap:8px;align-items:center;font-size:14px;margin:4px 0 10px"><input type="checkbox" style="width:auto;margin:0" ${autoZap ? "checked" : ""} onchange="autoZap=this.checked"> Abrir WhatsApp com a mensagem ao marcar “Pronto”</label>
     <button class="btn" style="width:100%" onclick="addOrder()">Adicionar à fila</button></div>
