@@ -122,7 +122,7 @@ async function lerPdf(file){
   } catch (e) { show("Não consegui ler este PDF. Preencha manualmente."); }
 }
 
-function formatPhone(input){
+function capitalizeWords(input){\n  const start = input.selectionStart, end = input.selectionEnd;\n  input.value = input.value.replace(/(^|\\s)([\\p{L}])/gu, (m, space, letter) => space + letter.toLocaleUpperCase("pt-BR"));\n  input.setSelectionRange(start, end);\n}\n\nfunction formatPhone(input){
   let d = input.value.replace(/\\D/g, "");
   if (d.startsWith("55") && d.length > 11) d = d.slice(2);
   d = d.slice(0, 11);
@@ -254,8 +254,8 @@ function vBalcao(){
     <div id="pdfmsg">${pdfBox()}</div></div>
   <div class="card"><h3>Novo pedido</h3>
     <input id="fn" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Nº do pedido" autocomplete="off" oninput="this.value=this.value.replace(/\D/g, '')">
-    <input id="fc" placeholder="Nome completo do cliente (com sobrenome)" autocomplete="off" spellcheck="true" lang="pt-BR" autocapitalize="words">
-    <input id="fd" placeholder="Cidade" autocomplete="off" spellcheck="true" lang="pt-BR" autocapitalize="words">
+    <input id="fc" placeholder="Nome completo do cliente (com sobrenome)" autocomplete="off" spellcheck="true" lang="pt-BR" autocapitalize="words" oninput="capitalizeWords(this)">
+    <input id="fd" placeholder="Cidade" autocomplete="off" spellcheck="true" lang="pt-BR" autocapitalize="words" oninput="capitalizeWords(this)">
     <input id="ft" type="tel" placeholder="WhatsApp com DDD (opcional)" inputmode="tel" autocomplete="off" oninput="formatPhone(this)">
     <input id="fo" placeholder="Observações (opcional)" autocomplete="off" spellcheck="true" lang="pt-BR" autocapitalize="sentences">
     <label style="display:flex;gap:8px;align-items:center;font-size:14px;margin:4px 0 10px"><input type="checkbox" style="width:auto;margin:0" ${autoZap ? "checked" : ""} onchange="autoZap=this.checked"> Abrir WhatsApp com a mensagem ao marcar “Pronto”</label>
